@@ -1,2 +1,2 @@
-# Arkham-Horror-Decker-v2
+# Arkham Horror Decker
 Вторая версия помощника по составлению колод.
