@@ -2,7 +2,8 @@ import sys
 from utility.resource_path import resource_path
 from utility.settings import Settings
 from PyQt5.QtCore import QTranslator
-from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication
+from view.main_window import MainWindow
 
 
 def prepare_app(app_var):
@@ -21,7 +22,8 @@ def prepare_app(app_var):
 
 if __name__ == '__main__':
     # Запуск основного потока
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     prepare_app(app)
-    # main_window = MWView()
-    sys.exit(app.exec_())
+    main_window = MainWindow()
+    main_window.showMaximized()
+    app.exec()
