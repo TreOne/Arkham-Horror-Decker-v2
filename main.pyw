@@ -10,8 +10,8 @@ def prepare_app(app_var):
     app_settings = Settings()
 
     # Внешний вид приложения
-    theme_style = app_settings.get('appearance', 'theme_style')  # default/fusion
-    if theme_style == 'fusion':
+    theme_style = app_settings.get('Appearance', 'theme_style')
+    if theme_style == 'Fusion':
         app_var.setStyle('Fusion')
 
     # Руссификация интерфейса QT
@@ -25,5 +25,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     prepare_app(app)
     main_window = MainWindow()
-    main_window.showMaximized()
+    # main_window.showMaximized()
+    main_window.show()
     app.exec()

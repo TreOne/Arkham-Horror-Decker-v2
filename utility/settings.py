@@ -1,5 +1,5 @@
 import configparser
-from utility.resource_path import resource_path
+import os
 
 
 class Settings:
@@ -8,9 +8,16 @@ class Settings:
     """
 
     def __init__(self):
-        self.filename = resource_path('resources/settings.ini')
+        self.APP_NAME = 'Arkham Horror Decker'
+
+        config_dir_name = '.' + self.APP_NAME.lower().replace(' ', '_')
+        self.APP_CONFIG_DIR = os.path.join(os.path.expanduser("~"), config_dir_name)
+        self.APP_CONFIG_FILENAME = os.path.join(self.APP_CONFIG_DIR, 'config.ini')
+
         self.config = configparser.ConfigParser()
-        self.config.read(self.filename)
+        if not os.path.exists(self.APP_CONFIG_FILENAME):
+            self.create_config()
+        self.config.read(self.APP_CONFIG_FILENAME)
 
     def get(self, section, setting):
         value = self.config.get(section, setting)
@@ -18,5 +25,11 @@ class Settings:
 
     def set(self, section, setting, value):
         self.config.set(section, setting, value)
-        with open(self.filename, "w") as config_file:
+        with open(self.APP_CONFIG_FILENAME, 'w') as config_file:
             self.config.write(config_file)
+
+    def create_config(self):
+        if not os.path.exists(self.APP_CONFIG_DIR):
+            os.makedirs(self.APP_CONFIG_DIR)
+        self.config.add_section("Appearance")
+        self.set('Appearance', 'theme_style', 'fusion')
