@@ -1,7 +1,6 @@
-from PyQt5.QtCore import QSettings, QTranslator
-
-from utility.constants import AUTHOR, APP_NAME
+from PyQt5.QtCore import QTranslator
 from utility.helper_function import resource_path
+from utility.variables import settings
 
 
 class AppPreparer:
@@ -10,7 +9,6 @@ class AppPreparer:
     """
     def __init__(self):
         self.app = None
-        self.app_settings = QSettings(AUTHOR, APP_NAME)
 
     def prepare_app(self, app):
         """Подготовить приложение"""
@@ -20,7 +18,7 @@ class AppPreparer:
 
     def _apply_theme(self):
         """Внешний вид приложения"""
-        theme_style = self.app_settings.value("Theme Style", 'Fusion')
+        theme_style = settings.value("Theme Style", 'Fusion')
         if theme_style == 'Fusion':
             self.app.setStyle('Fusion')
 
