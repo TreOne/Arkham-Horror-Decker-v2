@@ -14,7 +14,7 @@
    <string>Arkham Horror Decker</string>
   </property>
   <widget class="QWidget" name="central_widget">
-   <layout class="QHBoxLayout" name="horizontalLayout_4" stretch=""/>
+   <layout class="QHBoxLayout" name="horizontalLayout_4"/>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -27,6 +27,5 @@
    </property>
   </widget>
  </widget>
- <resources/>
  <connections/>
 </ui>

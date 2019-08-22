@@ -1,7 +1,7 @@
-from PyQt5 import QtGui
 from PyQt5.QtWidgets import QMainWindow
+
+from utility.helper_function import get_icon
 from view.ui.main_window_ui import Ui_MainWindow
-from utility.resource_path import resource_path
 
 
 class MainWindow(QMainWindow):
@@ -13,4 +13,4 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowIcon(QtGui.QIcon(resource_path('resources/icons/app.svg')))
+        self.setWindowIcon(get_icon('app.svg'))

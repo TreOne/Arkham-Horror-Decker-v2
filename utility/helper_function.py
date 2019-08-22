@@ -1,5 +1,6 @@
 import sys
 import os
+from PyQt5.QtGui import QIcon
 
 
 def resource_path(relative):
@@ -14,3 +15,7 @@ def resource_path(relative):
         return os.path.join(sys._MEIPASS, relative)
     else:
         return os.path.join(os.path.abspath("."), relative)
+
+
+def get_icon(name):
+    return QIcon(resource_path('resources/icons/' + name))
