@@ -1,7 +1,8 @@
-from PyQt5.QtCore import QSize, QPoint, QFile, QTextStream, Qt, QFileInfo
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication
+from PyQt5.QtCore import QSize, QPoint, QFile, QTextStream, Qt, QFileInfo, QByteArray
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication, qApp
+from utility.app import App
 from utility.helper_function import get_icon
-from utility.variables import settings, APP_NAME
+from utility.variables import APP_NAME
 from view.ui.main_window_ui import Ui_MainWindow
 
 
@@ -16,30 +17,28 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowIcon(get_icon('app.svg'))
-        self.load_size_and_position()
+        self.restore_window_settings()
         self.set_current_file('')
 
-    def load_size_and_position(self):
+    def restore_window_settings(self):
         """Загрузка настроек размера и положения окна"""
-        size = settings.value("Size", QSize(400, 400))
-        position = settings.value("Position", QPoint(200, 200))
-        self.resize(size)
-        self.move(position)
+        self.restoreGeometry(App.settings.value("Geometry", QByteArray()))
+        self.restoreState(App.settings.value("Window State", QByteArray()))
 
-    def save_size_and_position(self):
+    def save_window_settings(self):
         """Сохранение настроек размера и положения окна"""
-        settings.setValue("Position", self.pos())
-        settings.setValue("Size", self.size())
+        App.settings.setValue("Geometry", self.saveGeometry())
+        App.settings.setValue("Window State", self.saveState())
 
     def closeEvent(self, event):
         if self.maybe_save():
-            self.save_size_and_position()
+            self.save_window_settings()
             event.accept()
         else:
             event.ignore()
 
     def maybe_save(self):
-        is_modified = True
+        is_modified = False
         if is_modified:
             ret = QMessageBox.warning(self, APP_NAME, "У вас остались несохраненные изменения.\n"
                                                       "Хотите ли вы сохранить измененния?",
@@ -84,8 +83,7 @@ class MainWindow(QMainWindow):
             shown_name = self.stripped_name(self.current_file)
         else:
             shown_name = 'untitled.txt'
-
-        self.setWindowTitle("%s[*] - %s" % (shown_name, APP_NAME))
+        self.setWindowTitle("%s[*]" % shown_name)
 
     def stripped_name(self, full_file_name):
         return QFileInfo(full_file_name).fileName()

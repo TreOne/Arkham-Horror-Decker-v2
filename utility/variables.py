@@ -1,6 +1,4 @@
-from PyQt5.QtCore import QSettings
-
 APP_NAME = "Arkham Horror Decker"
+APP_NAME_RUS = "Карты Аркхэма"
 AUTHOR = "TreOne"
-
-settings = QSettings(AUTHOR, APP_NAME)
+VERSION = "2.1"
