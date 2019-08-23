@@ -1,5 +1,5 @@
 import sys
-from utility.app import App
+from utility.app_wrapper import App
 from view.main_window import MainWindow
 
 # Запуск основного потока

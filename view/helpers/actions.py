@@ -1,10 +1,14 @@
+from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import QAction, QApplication
+from PyQt5.QtWidgets import QAction
+from utility.arkham_icons import ArkhamIcons
 
 
 class Actions:
     def __init__(self, parent):
-        self.new_letter = QAction(QIcon(':/images/new.png'), "&New Letter", parent)
+        icons = ArkhamIcons(size=50)
+
+        self.new_letter = QAction(icons.get(icons.mystic), "&New Letter", parent)
         self.new_letter.setShortcut(QKeySequence.New)
         self.new_letter.setStatusTip("Create a new form letter")
         # self.new_letter.triggered.connect(parent.new_letter)
