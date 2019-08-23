@@ -1,9 +1,12 @@
-from PyQt5.QtCore import QSize, QPoint, QFile, QTextStream, Qt, QFileInfo, QByteArray
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication, qApp
+from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication
 from utility.app import App
 from utility.helper_function import get_icon
 from utility.variables import APP_NAME
+from view.helpers.actions import Actions
 from view.ui.main_window_ui import Ui_MainWindow
+from view.widgets.paragraphs import ParagraphsWidget
+from view.widgets.statistics import StatisticsWidget
 
 
 class MainWindow(QMainWindow):
@@ -18,6 +21,9 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowIcon(get_icon('app.svg'))
         self.restore_window_settings()
+        self.actions = Actions(self)
+        self.create_toolbars()
+        self.create_dock_windows()
         self.set_current_file('')
 
     def restore_window_settings(self):
@@ -29,6 +35,19 @@ class MainWindow(QMainWindow):
         """Сохранение настроек размера и положения окна"""
         App.settings.setValue("Geometry", self.saveGeometry())
         App.settings.setValue("Window State", self.saveState())
+
+    def create_toolbars(self):
+        self.fileToolBar = self.addToolBar("File")
+        self.fileToolBar.addAction(self.actions.new_letter)
+        self.fileToolBar.addAction(self.actions.save)
+        self.fileToolBar.addAction(self.actions.print)
+
+    def create_dock_windows(self):
+        dock = StatisticsWidget(self)
+        self.ui.view_menu.addAction(dock.toggleViewAction())
+
+        dock = ParagraphsWidget(self)
+        self.ui.view_menu.addAction(dock.toggleViewAction())
 
     def closeEvent(self, event):
         if self.maybe_save():

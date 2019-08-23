@@ -25,7 +25,20 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="view_menu">
+    <property name="title">
+     <string>&amp;Вид</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="file_menu">
+    <property name="title">
+     <string>&amp;Файл</string>
+    </property>
+   </widget>
+   <addaction name="file_menu"/>
+   <addaction name="view_menu"/>
   </widget>
  </widget>
+ <resources/>
  <connections/>
 </ui>

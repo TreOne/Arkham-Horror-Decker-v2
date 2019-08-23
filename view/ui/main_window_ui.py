@@ -20,7 +20,13 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
         self.menubar.setObjectName("menubar")
+        self.view_menu = QtWidgets.QMenu(self.menubar)
+        self.view_menu.setObjectName("view_menu")
+        self.file_menu = QtWidgets.QMenu(self.menubar)
+        self.file_menu.setObjectName("file_menu")
         MainWindow.setMenuBar(self.menubar)
+        self.menubar.addAction(self.file_menu.menuAction())
+        self.menubar.addAction(self.view_menu.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -28,6 +34,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Arkham Horror Decker"))
+        self.view_menu.setTitle(_translate("MainWindow", "&Вид"))
+        self.file_menu.setTitle(_translate("MainWindow", "&Файл"))
 
 
 if __name__ == "__main__":
