@@ -1,23 +1,22 @@
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction
-from utility.arkham_icons import ArkhamIcons
+from utility.symbols import Symbol
 
 
 class Actions:
     def __init__(self, parent):
-        icons = ArkhamIcons(size=50)
 
-        self.new_letter = QAction(icons.get(icons.mystic), "&New Letter", parent)
+        self.new_letter = QAction(Symbol(Symbol.agility), "&New Letter", parent)
         self.new_letter.setShortcut(QKeySequence.New)
         self.new_letter.setStatusTip("Create a new form letter")
         # self.new_letter.triggered.connect(parent.new_letter)
 
-        self.save = QAction(QIcon(':/images/save.png'), "&Save...", parent)
+        self.save = QAction(Symbol(Symbol.mystic), "&Save...", parent)
         self.save.setShortcut(QKeySequence.Save)
         self.save.setStatusTip("Save the current form letter")
         # self.save.triggered.connect(parent.save)
 
-        self.print = QAction(QIcon(':/images/print.png'), "&Print...", parent)
+        self.print = QAction(Symbol(Symbol.strength), "&Print...", parent)
         self.print.setShortcut(QKeySequence.Print)
         self.print.setStatusTip("Print the current form letter")
         # self.print.triggered.connect(parent.print_)
