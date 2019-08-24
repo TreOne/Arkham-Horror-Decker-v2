@@ -1,4 +1,3 @@
-from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction
 from utility.arkham_icons import ArkhamIcons
