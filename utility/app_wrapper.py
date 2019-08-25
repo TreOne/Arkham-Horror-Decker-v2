@@ -37,7 +37,5 @@ class App(QApplication):
 
     def _load_fonts(self):
         """Загрузка кастомных шрифтов"""
-        # arkham-icons
-        QtGui.QFontDatabase.addApplicationFont(resource_path('resources/fonts/arkham-icons.ttf'))
         # Medieval
-        QtGui.QFontDatabase.addApplicationFont(resource_path('resources/fonts/medieval_rus.ttf'))
+        QtGui.QFontDatabase.addApplicationFont(resource_path('resources/fonts/medieval.ttf'))

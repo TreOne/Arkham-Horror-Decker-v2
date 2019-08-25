@@ -1,5 +1,7 @@
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont, QIcon
+from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont, QIcon, QFontDatabase
+
+from utility.helper_function import resource_path
 
 agility = "a"
 intellect = "b"
@@ -35,6 +37,13 @@ class ArkhamIcon(QIcon):
         self.char = char
         self.__size = QSize(size, size)
         self.__color = color
+
+        # arkham-icons
+        font_id = QFontDatabase.addApplicationFont(resource_path('resources/fonts/arkham-icons.ttf'))
+        font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+        font_size = size * 0.6
+        self.font = QFont(font_family, font_size)
+
         pixmap = QPixmap(self.__size)
         pixmap.fill(Qt.transparent)
         self._draw_icon(pixmap)
@@ -54,8 +63,7 @@ class ArkhamIcon(QIcon):
         painter.begin(pixmap)
         painter.setPen(self._get_color())
         # TODO: Решить вопрос с размером иконок
-        font_size = self.__size.height() * 0.6
-        painter.setFont(QFont('arkham-icons', font_size))
+        painter.setFont(self.font)
         painter.drawText(pixmap.rect(), Qt.AlignCenter, self.char)
         painter.end()
 
