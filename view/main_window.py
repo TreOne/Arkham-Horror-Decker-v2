@@ -41,6 +41,8 @@ class MainWindow(QMainWindow):
         self.fileToolBar.addAction(self.actions.new_letter)
         self.fileToolBar.addAction(self.actions.save)
         self.fileToolBar.addAction(self.actions.print)
+        self.fileToolBar.addAction(self.actions.print1)
+        self.fileToolBar.addAction(self.actions.print2)
 
     def create_dock_windows(self):
         dock = StatisticsWidget(self)

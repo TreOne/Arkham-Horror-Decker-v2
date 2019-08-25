@@ -2,6 +2,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import QTranslator, QSettings
 from PyQt5.QtWidgets import QApplication
 from utility.helper_function import resource_path
+from utility.symbols import Symbol
 from utility.variables import APP_NAME, AUTHOR, VERSION, APP_NAME_RUS
 
 
@@ -10,8 +11,6 @@ class App(QApplication):
     Класс подготовки главного окна к запуску.
     """
 
-    settings = QSettings()
-
     def __init__(self, argv):
         super().__init__(argv)
         self.setApplicationName(APP_NAME)
@@ -19,7 +18,7 @@ class App(QApplication):
         self.setOrganizationName(AUTHOR)
         self.setApplicationVersion(VERSION)
         App.settings = QSettings()
-
+        App.symbol = Symbol()
         self._apply_theme()
         self._translate()
         self._load_fonts()
