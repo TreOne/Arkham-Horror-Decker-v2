@@ -1,6 +1,33 @@
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont, QIcon
 
+agility = "a"
+intellect = "b"
+strength = "c"
+will = "p"
+wild = "?"
+
+rogue = "d"
+survivor = "e"
+guardian = "f"
+mystic = "g"
+seeker = "h"
+
+action = "i"
+free = "j"
+reaction = "!"
+
+skull = "k"
+cultist = "l"
+auto_fail = "m"
+elder_thing = "n"
+elder_sign = "o"
+tablet = "q"
+
+unique = "s"
+per_investigator = "u"
+null = "t"
+
 
 class ArkhamIcon(QIcon):
     def __init__(self, char, color=None, size=50):
@@ -34,17 +61,17 @@ class ArkhamIcon(QIcon):
 
     def _get_color(self):
         colors = {
-            "p": QColor("#003961"),
-            "b": QColor("#4e1a45"),
-            "c": QColor("#661e09"),
-            "a": QColor("#00543a"),
-            "?": QColor("#635120"),
+            agility: QColor("#00543a"),
+            intellect: QColor("#4e1a45"),
+            strength: QColor("#661e09"),
+            will: QColor("#003961"),
+            wild: QColor("#635120"),
 
-            "d": QColor("#107116"),
-            "e": QColor("#cc3038"),
-            "f": QColor("#2b80c5"),
-            "g": QColor("#4331b9"),
-            "h": QColor("#ec8426"),
+            rogue: QColor("#107116"),
+            survivor: QColor("#cc3038"),
+            guardian: QColor("#2b80c5"),
+            mystic: QColor("#4331b9"),
+            seeker: QColor("#ec8426"),
         }
         default_color = QColor("black")
         return self.__color if self.__color is not None else colors.get(self.char, default_color)
@@ -52,30 +79,29 @@ class ArkhamIcon(QIcon):
 
 class Symbol:
     def __init__(self):
-        super().__init__()
-        self.agility = ArkhamIcon("a")
-        self.lore = self.intellect = ArkhamIcon("b")
-        self.strength = self.combat = ArkhamIcon("c")
-        self.will = self.willpower = ArkhamIcon("p")
-        self.wild = ArkhamIcon("?")
+        self.agility = ArkhamIcon(agility)
+        self.intellect = self.lore = ArkhamIcon(intellect)
+        self.strength = self.combat = ArkhamIcon(strength)
+        self.will = self.willpower = ArkhamIcon(will)
+        self.wild = ArkhamIcon(wild)
 
-        self.rogue = ArkhamIcon("d")
-        self.survivor = ArkhamIcon("e")
-        self.guardian = ArkhamIcon("f")
-        self.mystic = ArkhamIcon("g")
-        self.seeker = ArkhamIcon("h")
+        self.rogue = ArkhamIcon(rogue)
+        self.survivor = ArkhamIcon(survivor)
+        self.guardian = ArkhamIcon(guardian)
+        self.mystic = ArkhamIcon(mystic)
+        self.seeker = ArkhamIcon(seeker)
 
-        self.action = ArkhamIcon("i")
-        self.fast = self.free = self.lightning = ArkhamIcon("j")
-        self.reaction = ArkhamIcon("!")
+        self.action = ArkhamIcon(action)
+        self.free = self.fast = self.lightning = ArkhamIcon(free)
+        self.reaction = ArkhamIcon(reaction)
 
-        self.skull = ArkhamIcon("k")
-        self.cultist = ArkhamIcon("l")
-        self.auto_fail = ArkhamIcon("m")
-        self.elder_thing = ArkhamIcon("n")
-        self.eldersign = self.elder_sign = ArkhamIcon("o")
-        self.tablet = ArkhamIcon("q")
+        self.skull = ArkhamIcon(skull)
+        self.cultist = ArkhamIcon(cultist)
+        self.auto_fail = ArkhamIcon(auto_fail)
+        self.elder_thing = ArkhamIcon(elder_thing)
+        self.elder_sign = self.eldersign = ArkhamIcon(elder_sign)
+        self.tablet = ArkhamIcon(tablet)
 
-        self.unique = ArkhamIcon("s")
-        self.per_investigator = ArkhamIcon("u")
-        self.null = ArkhamIcon("t")
+        self.unique = ArkhamIcon(unique)
+        self.per_investigator = ArkhamIcon(per_investigator)
+        self.null = ArkhamIcon(null)
