@@ -1,8 +1,8 @@
 from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication
-from utility.app_wrapper import App
-from utility.helper_function import get_icon
-from utility.variables import APP_NAME
+from classes.app import App
+from classes.helper_function import get_icon
+from classes.constants import APP_NAME
 from view.helpers.actions import Actions
 from view.ui.main_window_ui import Ui_MainWindow
 from view.widgets.paragraphs import ParagraphsWidget

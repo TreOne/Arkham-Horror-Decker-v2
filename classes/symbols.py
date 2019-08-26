@@ -1,7 +1,6 @@
-from PyQt5.QtCore import Qt, QSize, QRect
+from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont, QIcon, QFontDatabase, QFontMetrics
-
-from utility.helper_function import resource_path
+from classes.helper_function import resource_path
 
 agility = "a"
 intellect = "b"
@@ -32,39 +31,32 @@ null = "t"
 
 
 class ArkhamIcon(QIcon):
-    def __init__(self, char, color=None, size=50):
+    def __init__(self, char, size=40):
         super().__init__()
         self.char = char
-        self.__color = color
-
-        # arkham-icons
-        font_id = QFontDatabase.addApplicationFont(resource_path('resources/fonts/arkham-icons.ttf'))
-        font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
-        self.font = QFont(font_family)
-        self.font.setPixelSize(size)
+        self._font_init(size)
         pixmap = self._draw_icon()
         self.addPixmap(pixmap)
 
-    def set_color(self, color):
-        self.__color = color
+    def _font_init(self, size):
+        font_id = QFontDatabase.addApplicationFont(resource_path('resources/fonts/arkham-icons.ttf'))
+        font = QFontDatabase.applicationFontFamilies(font_id)[0]
+        self.font = QFont(font)
+        self.font.setPixelSize(size)
 
     def _draw_icon(self):
-        rect = self._get_bounding_rect()
+        fm = QFontMetrics(self.font)
+        rect = QRect(0, 0, fm.horizontalAdvance(self.char), fm.height())
         pixmap = QPixmap(rect.size())
         pixmap.fill(Qt.transparent)
+
         painter = QPainter()
         painter.begin(pixmap)
         painter.setPen(self._get_color())
         painter.setFont(self.font)
-        painter.drawText(rect, Qt.AlignCenter | Qt.AlignVCenter, self.char)
+        painter.drawText(rect, Qt.AlignCenter, self.char)
         painter.end()
         return pixmap
-
-    def _get_bounding_rect(self):
-        font_metrics = QFontMetrics(self.font)
-        bounding_rect = font_metrics.tightBoundingRect(self.char)
-        char_rect = QRect(0, 0, bounding_rect.width(), bounding_rect.height())
-        return char_rect
 
     def _get_color(self):
         colors = {
@@ -81,7 +73,7 @@ class ArkhamIcon(QIcon):
             seeker: QColor("#ec8426"),
         }
         default_color = QColor("black")
-        return self.__color if self.__color is not None else colors.get(self.char, default_color)
+        return colors.get(self.char, default_color)
 
 
 class Symbol:

@@ -1,7 +1,6 @@
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction
-
-from utility.app_wrapper import App
+from classes.app import App
 
 
 class Actions:
