@@ -13,6 +13,11 @@ def get_app():
     return QApplication.instance()
 
 
+def get_settings():
+    """Возвращает текущий объект настроек QApplication"""
+    return QApplication.instance().settings
+
+
 class App(QApplication):
     """
     Класс подготовки главного окна к запуску.
@@ -73,6 +78,11 @@ class App(QApplication):
 
         # Инициализация настроек
         App.settings = QSettings()
+
+        # Инициализируемловца необработанных исключений
+        from classes import exceptions
+        sys.excepthook = exceptions.exception_handler
+
         App.symbol = Symbol()
         self._apply_theme()
         self._translate()
@@ -80,9 +90,9 @@ class App(QApplication):
 
     def _apply_theme(self):
         """Внешний вид приложения"""
-        theme_style = self.settings.value("Theme Style", 'Fusion')
-        if theme_style == 'Fusion':
-            self.setStyle('Fusion')
+        theme_style = self.settings.value("Theme Style", "Fusion")
+        if theme_style == "Fusion":
+            self.setStyle("Fusion")
 
     def _translate(self):
         """Руссификация интерфейса QT"""
