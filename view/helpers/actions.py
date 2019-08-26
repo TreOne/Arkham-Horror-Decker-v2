@@ -6,6 +6,11 @@ from utility.app_wrapper import App
 
 class Actions:
     def __init__(self, parent):
+        self.new_letter1 = QAction(App.symbol.fast, "&New Letter", parent)
+        self.new_letter1.setShortcut(QKeySequence.New)
+        self.new_letter1.setStatusTip("Create a new form letter")
+        # # self.new_letter.triggered.connect(parent.new_letter)
+
         self.new_letter = QAction(App.symbol.mystic, "&New Letter", parent)
         self.new_letter.setShortcut(QKeySequence.New)
         self.new_letter.setStatusTip("Create a new form letter")

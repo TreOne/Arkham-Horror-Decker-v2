@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
 
     def create_toolbars(self):
         self.fileToolBar = self.addToolBar("File")
+        self.fileToolBar.addAction(self.actions.new_letter1)
         self.fileToolBar.addAction(self.actions.new_letter)
         self.fileToolBar.addAction(self.actions.save)
         self.fileToolBar.addAction(self.actions.print)

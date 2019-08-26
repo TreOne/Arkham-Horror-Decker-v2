@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont, QIcon, QFontDatabase
+from PyQt5.QtCore import Qt, QSize, QRect
+from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont, QIcon, QFontDatabase, QFontMetrics
 
 from utility.helper_function import resource_path
 
@@ -16,7 +16,7 @@ mystic = "g"
 seeker = "h"
 
 action = "i"
-free = "j"
+fast = "j"
 reaction = "!"
 
 skull = "k"
@@ -35,37 +35,36 @@ class ArkhamIcon(QIcon):
     def __init__(self, char, color=None, size=50):
         super().__init__()
         self.char = char
-        self.__size = QSize(size, size)
         self.__color = color
 
         # arkham-icons
         font_id = QFontDatabase.addApplicationFont(resource_path('resources/fonts/arkham-icons.ttf'))
         font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
-        font_size = size * 0.6
-        self.font = QFont(font_family, font_size)
-
-        pixmap = QPixmap(self.__size)
-        pixmap.fill(Qt.transparent)
-        self._draw_icon(pixmap)
+        self.font = QFont(font_family)
+        self.font.setPixelSize(size)
+        pixmap = self._draw_icon()
         self.addPixmap(pixmap)
-
-    def set_size(self, size):
-        self.__size = QSize(size, size)
 
     def set_color(self, color):
         self.__color = color
 
-    def _draw_icon(self, pixmap):
+    def _draw_icon(self):
+        rect = self._get_bounding_rect()
+        pixmap = QPixmap(rect.size())
+        pixmap.fill(Qt.transparent)
         painter = QPainter()
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setRenderHint(QPainter.TextAntialiasing, True)
-        painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
         painter.begin(pixmap)
         painter.setPen(self._get_color())
-        # TODO: Решить вопрос с размером иконок
         painter.setFont(self.font)
-        painter.drawText(pixmap.rect(), Qt.AlignCenter, self.char)
+        painter.drawText(rect, Qt.AlignCenter | Qt.AlignVCenter, self.char)
         painter.end()
+        return pixmap
+
+    def _get_bounding_rect(self):
+        font_metrics = QFontMetrics(self.font)
+        bounding_rect = font_metrics.tightBoundingRect(self.char)
+        char_rect = QRect(0, 0, bounding_rect.width(), bounding_rect.height())
+        return char_rect
 
     def _get_color(self):
         colors = {
@@ -100,7 +99,7 @@ class Symbol:
         self.seeker = ArkhamIcon(seeker)
 
         self.action = ArkhamIcon(action)
-        self.free = self.fast = self.lightning = ArkhamIcon(free)
+        self.free = self.fast = self.lightning = ArkhamIcon(fast)
         self.reaction = ArkhamIcon(reaction)
 
         self.skull = ArkhamIcon(skull)
