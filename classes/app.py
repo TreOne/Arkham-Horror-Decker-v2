@@ -79,11 +79,17 @@ class App(QApplication):
         # Инициализация настроек
         App.settings = QSettings()
 
+        # Инициализация иконок
+        App.symbol = Symbol()
+
         # Инициализируемловца необработанных исключений
         from classes import exceptions
         sys.excepthook = exceptions.exception_handler
 
-        App.symbol = Symbol()
+        # Создаем главное окно приложения
+        from view.main_window import MainWindow
+        self.window = MainWindow()
+
         self._apply_theme()
         self._translate()
         self._load_fonts()

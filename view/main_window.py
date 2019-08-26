@@ -1,30 +1,45 @@
+import os
 from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication
-from classes.app import App
+from classes import ui_util
+from classes.app import App, get_app
 from classes.helper_function import get_icon
-from classes.constants import APP_NAME
+from classes.constants import APP_NAME, PATH
+from classes.logger import log
 from view.helpers.actions import Actions
-from view.ui.main_window_ui import Ui_MainWindow
 from view.widgets.paragraphs import ParagraphsWidget
 from view.widgets.statistics import StatisticsWidget
 
 
 class MainWindow(QMainWindow):
-    """
-    Визуальное представление главного окна.
-    """
+    """Главное окно"""
+
+    ui_path = os.path.join(PATH, 'view', 'ui', 'main_window.ui')
 
     def __init__(self):
         QMainWindow.__init__(self)
         self.current_file = ''
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        self.recent_menu = None
+
+        # set window on app for reference during initialization of children
+        get_app().window = self
+
+        # Load UI from designer
+        ui_util.load_ui(self, self.ui_path)
+
+        # Init Ui
+        ui_util.init_ui(self)
+
+        # self.ui = Ui_MainWindow()
+        # self.ui.setupUi(self)
+
         self.setWindowIcon(get_icon('app.svg'))
         self.restore_window_settings()
         self.actions = Actions(self)
         self.create_toolbars()
         self.create_dock_windows()
         self.set_current_file('')
+        self.show()
 
     def restore_window_settings(self):
         """Загрузка настроек размера и положения окна"""
@@ -47,12 +62,13 @@ class MainWindow(QMainWindow):
 
     def create_dock_windows(self):
         dock = StatisticsWidget(self)
-        self.ui.view_menu.addAction(dock.toggleViewAction())
+        self.view_menu.addAction(dock.toggleViewAction())
 
         dock = ParagraphsWidget(self)
-        self.ui.view_menu.addAction(dock.toggleViewAction())
+        self.view_menu.addAction(dock.toggleViewAction())
 
     def closeEvent(self, event):
+        log.info('------------------ Выключение ------------------')
         if self.maybe_save():
             self.save_window_settings()
             event.accept()

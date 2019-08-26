@@ -31,7 +31,7 @@ null = "t"
 
 
 class ArkhamIcon(QIcon):
-    def __init__(self, char, size=40):
+    def __init__(self, char, size=50):
         super().__init__()
         self.char = char
         self._font_init(size)
