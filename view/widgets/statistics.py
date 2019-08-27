@@ -25,7 +25,12 @@ class StatisticsWidget(QDockWidget):
         background_color = app.palette().color(QPalette.Base).name()
         border_color = app.palette().color(QPalette.Mid).name()
 
-        self.setStyleSheet("QDockWidget > QWidget {"
-                           f"background-color: {background_color};"
-                           f"border: 1 solid {border_color};"
-                           "}")
+        self.setStyleSheet(f"""
+                                QWidget#statistics_layout {{
+                                    background-color: {background_color};
+                                    border: 1px solid {border_color};
+                                }}
+                                QLabel {{
+                                    margin: 2px 0px 0px 2px;
+                                }}
+                            """)

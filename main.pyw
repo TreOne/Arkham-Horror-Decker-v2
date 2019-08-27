@@ -1,4 +1,14 @@
 import sys
+
+
+try:
+    from classes import constants
+    print("Загрузка модулей из текущего каталога: %s" % constants.PATH)
+except ImportError:
+    from classes import constants
+    print("Загрузка модулей из каталога установки: %s" % constants.PATH)
+
+
 from classes.app import App
 
 
