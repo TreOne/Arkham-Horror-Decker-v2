@@ -40,6 +40,7 @@ class App(QApplication):
 
             # Отметка начала сессии
             import time
+            self.__start_time = time.time()  # Время начала инициализации
             log.info("------------------------------------------------")
             locale.setlocale(locale.LC_ALL, '')
             log.info(time.strftime("%d %B %Y %H:%M:%S", time.localtime()).center(48))  # Пример: 26 Август 2019 16:14:04
@@ -153,6 +154,12 @@ class App(QApplication):
         # Создаем главное окно приложения
         from view.main_window import MainWindow
         self.window = MainWindow()
+
+        log.info("------------------------------------------------")
+        log.info("Инициализаций приложения завершена".center(48))
+        elapsed_time = time.time() - self.__start_time
+        log.info(("Потребовалось времени: %.3f сек" % elapsed_time).center(48))
+        log.info("------------------------------------------------")
 
         # self._apply_theme()
 

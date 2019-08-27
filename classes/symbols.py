@@ -1,6 +1,9 @@
+import time
+
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont, QIcon, QFontDatabase, QFontMetrics
 from classes.helper_function import resource_path
+from classes.logger import log
 
 agility = "a"
 intellect = "b"
@@ -78,6 +81,7 @@ class ArkhamIcon(QIcon):
 
 class Symbol:
     def __init__(self):
+        self.__start_time = time.time()
         self.agility = ArkhamIcon(agility)
         self.intellect = self.lore = ArkhamIcon(intellect)
         self.strength = self.combat = ArkhamIcon(strength)
@@ -104,3 +108,5 @@ class Symbol:
         self.unique = ArkhamIcon(unique)
         self.per_investigator = ArkhamIcon(per_investigator)
         self.null = ArkhamIcon(null)
+        elapsed_time = time.time() - self.__start_time
+        log.info(("Загрузка Символов Аркхэма завершена за %.3f сек" % elapsed_time))
