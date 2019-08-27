@@ -1,12 +1,13 @@
 import os
+from datetime import datetime
 
 VERSION = "2.1"
-APP_NAME = "Arkham Horror Decker"
-APP_NAME_ABBR = "AHD"
+APP_NAME = "Cards of Arkham"
+APP_NAME_ABBR = "COA"
 APP_NAME_RUS = "Карты Аркхэма"
 DESCRIPTION = "Помощник по созданеию колод"
 AUTHOR = "TreOne"
-COPYRIGHT = "Copyright (c) 2008-2018 %s" % AUTHOR
+COPYRIGHT = "Copyright (c) 2018-%s %s" % (datetime.now().year, AUTHOR)
 
 APP_NAME_WITHOUT_SPACES = APP_NAME.lower().replace(" ", "-")
 CWD = os.getcwd()
