@@ -29,6 +29,7 @@
     <property name="title">
      <string>&amp;Вид</string>
     </property>
+    <addaction name="action"/>
    </widget>
    <widget class="QMenu" name="file_menu">
     <property name="title">
@@ -38,7 +39,47 @@
    <addaction name="file_menu"/>
    <addaction name="view_menu"/>
   </widget>
+  <widget class="QToolBar" name="tool_bar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionUpdateDB"/>
+  </widget>
+  <action name="actionUpdateDB">
+   <property name="icon">
+    <iconset theme="database-refresh" resource="../../resources/app.qrc">
+     <normaloff>:/icon/icons/Material/actions/database-refresh.svg</normaloff>:/icon/icons/Material/actions/database-refresh.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Обновление</string>
+   </property>
+   <property name="toolTip">
+    <string>Обновление базы данных карт</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+U</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Панель инструментов</string>
+   </property>
+   <property name="toolTip">
+    <string>Отобразить/скрыть панель инструментов</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resources/app.qrc"/>
+ </resources>
  <connections/>
 </ui>

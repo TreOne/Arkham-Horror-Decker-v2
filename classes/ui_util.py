@@ -9,7 +9,7 @@ from classes.app import get_settings, get_app
 from classes.constants import PATH
 from classes.logger import log
 
-DEFAULT_THEME_NAME = "Humanity"
+DEFAULT_THEME_NAME = "Material"
 
 
 def load_theme():
@@ -59,53 +59,6 @@ def load_ui(window, ui_name):
     window.uiTree = xml.etree.ElementTree.parse(path)
 
 
-def get_default_icon(theme_name):
-    """ Get a QIcon, and fallback to default theme if OS does not support themes. """
-
-    # Default path to backup icons
-    start_path = ":/icons/" + DEFAULT_THEME_NAME + "/"
-    icon_path = search_dir(start_path, theme_name)
-    return QIcon(icon_path), icon_path
-
-
-def search_dir(base_path, theme_name):
-    """ Search for theme name """
-
-    # Search each entry in this directory
-    base_dir = QDir(base_path)
-    for e in base_dir.entryList():
-        # Path to current item
-        path = base_dir.path() + "/" + e
-        base_filename = e.split('.')[0]
-
-        # If file matches theme name, return
-        if base_filename == theme_name:
-            return path
-
-        # If this is a directory, search within it
-        dir = QDir(path)
-        if dir.exists():
-            # If found below, return it
-            res = search_dir(path, theme_name)
-            if res:
-                return res
-
-    # If no match found in dir, return None
-    return None
-
-
-def get_icon(theme_name):
-    """Get either the current theme icon or fallback to default theme (for custom icons). Returns None if none
-    found or empty name."""
-
-    if theme_name:
-        has_icon = QIcon.hasThemeIcon(theme_name)
-        fallback_icon, fallback_path = get_default_icon(theme_name)
-        if has_icon or fallback_icon:
-            return QIcon.fromTheme(theme_name, fallback_icon)
-    return None
-
-
 def init_element(window, elem):
     """Инициализировать иконки элемента"""
     name = ''
@@ -120,19 +73,59 @@ def init_element(window, elem):
 
 def setup_icon(window, elem, name, theme_name=None):
     """Используя xml окна, установить значок для данного элемента. Если передано имя темы, загрузить значок из нее"""
-    # TODO: Продолжить осмотр этого класса
     type_filter = 'action'
     if isinstance(elem, QWidget):  # Поиск виджета с именем вместо этого
         type_filter = 'widget'
     # Найти набор иконок в дереве (если есть)
     iconset = window.uiTree.find('.//' + type_filter + '[@name="' + name + '"]/property[@name="icon"]/iconset')
-    if iconset != None or theme_name:  # For some reason "if iconset:" doesn't work the same as "!= None"
+    if iconset != None or theme_name:  # TODO: По какой-то причине "if iconset:" работает не так же как "!= None"
         if not theme_name:
             theme_name = iconset.get('theme', '')
-        # Get Icon (either current theme or fallback)
+        # Получить иконку (текущая тема или версия по умолчанию)
         icon = get_icon(theme_name)
         if icon:
             elem.setIcon(icon)
+
+
+def get_icon(theme_name):
+    """Получить либо иконку от текущей темы, либо версию по умолчанию (для пользовательских значков).
+    Возвращает None если ничего не найдено или пустое имя."""
+    if theme_name:
+        has_icon = QIcon.hasThemeIcon(theme_name)
+        fallback_icon, fallback_path = get_default_icon(theme_name)
+        if has_icon or fallback_icon:
+            return QIcon.fromTheme(theme_name, fallback_icon)
+    return None
+
+
+def get_default_icon(theme_name):
+    """Возвращает QIcon или QIcon по умолчанию, если ОС не поддерживает темы"""
+    start_path = ":/icons/" + DEFAULT_THEME_NAME + "/"
+    icon_path = search_dir(start_path, theme_name)
+    return QIcon(icon_path), icon_path
+
+
+def search_dir(base_path, theme_name):
+    """Поиск названия темы"""
+    # Поиск по каждой записи в каталоге
+    base_dir = QDir(base_path)
+    for e in base_dir.entryList():
+        # Путь к текущему элементу
+        path = base_dir.path() + "/" + e
+        base_filename = e.split('.')[0]
+
+        # Если файл соответствует имени темы, возвращаем
+        if base_filename == theme_name:
+            return path
+
+        # Если это каталог, выполняем поиск в нем
+        inner_dir = QDir(path)
+        if inner_dir.exists():
+            res = search_dir(path, theme_name)
+            if res:
+                return res
+    # Если совпадений не найдено, возвращаем None
+    return None
 
 
 def connect_auto_events(window, elem, name):

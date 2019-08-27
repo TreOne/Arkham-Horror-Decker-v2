@@ -123,7 +123,7 @@ class App(QApplication):
             log.error("Ошибка установки шрифта medieval.ttf: %s" % str(ex))
 
         # Установить темную тему (экспериментальная опция)
-        if self.settings.value("theme") == "Humanity: Dark":
+        if self.settings.value("theme") == ui_util.DEFAULT_THEME_NAME + ": Dark":
             log.info("Установка тёмной темы")
             self.setStyle(QStyleFactory.create("Fusion"))
 

@@ -1,14 +1,14 @@
-import os
 from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication
 from classes import ui_util
 from classes.app import App, get_app
 from classes.helper_function import get_icon
-from classes.constants import APP_NAME, PATH
+from classes.constants import APP_NAME
 from classes.logger import log
 from view.helpers.actions import Actions
 from view.widgets.paragraphs import ParagraphsWidget
 from view.widgets.statistics import StatisticsWidget
+from resources import app_rc
 
 
 class MainWindow(QMainWindow):
@@ -25,6 +25,7 @@ class MainWindow(QMainWindow):
         ui_util.load_ui(self, 'main_window')
         ui_util.init_ui(self)
 
+        app_rc.qInitResources()
         self.setWindowIcon(get_icon('app.svg'))
         self.restore_window_settings()
         self.actions = Actions(self)
