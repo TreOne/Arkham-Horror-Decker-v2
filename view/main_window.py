@@ -14,8 +14,6 @@ from view.widgets.statistics import StatisticsWidget
 class MainWindow(QMainWindow):
     """Главное окно"""
 
-    ui_path = os.path.join(PATH, 'view', 'ui', 'main_window.ui')
-
     def __init__(self):
         QMainWindow.__init__(self)
         self.current_file = ''
@@ -24,7 +22,7 @@ class MainWindow(QMainWindow):
         # Установливаем главное окно для ссылки на него во время инициализации потомков
         get_app().window = self
 
-        ui_util.load_ui(self, self.ui_path)
+        ui_util.load_ui(self, 'main_window')
         ui_util.init_ui(self)
 
         self.setWindowIcon(get_icon('app.svg'))

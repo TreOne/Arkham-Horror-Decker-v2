@@ -10,12 +10,10 @@ from classes.constants import PATH
 class StatisticsWidget(QDockWidget):
     """Виджет статистики"""
 
-    ui_path = os.path.join(PATH, 'view', 'ui', 'statistics_widget.ui')
-
     def __init__(self, parent):
         QDockWidget.__init__(self)
 
-        ui_util.load_ui(self, self.ui_path)
+        ui_util.load_ui(self, 'statistics_widget')
         ui_util.init_ui(self)
 
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)

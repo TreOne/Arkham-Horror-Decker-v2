@@ -6,54 +6,56 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from classes.app import get_settings, get_app
+from classes.constants import PATH
 from classes.logger import log
 
 DEFAULT_THEME_NAME = "Humanity"
 
 
 def load_theme():
-    """ Load the current OS theme, or fallback to a default one """
-
+    """Загружаем текущую тему ОС или тему по умолчанию"""
     s = get_settings()
 
-    # If theme not reported by OS
+    # Если тема не задана операционной системой
     if QIcon.themeName() == '' and not s.value("theme") == "No Theme":
 
-        # Address known Ubuntu bug of not reporting configured theme name, use default ubuntu theme
+        # Известная ошибка, когда Ubuntu не сообщает имя темы,
+        # используем тему ubuntu по умолчанию
         if os.getenv('DESKTOP_SESSION') == 'ubuntu':
             QIcon.setThemeName('unity-icon-theme')
 
-        # Windows/Mac use packaged theme
+        # Используем тему из пакета на Windows и Mac
         else:
             QIcon.setThemeName(DEFAULT_THEME_NAME)
 
 
-def load_ui(window, path):
-    """ Load a Qt *.ui file, and also load an XML parsed version """
-    # Attempt to load the UI file 5 times
-    # This is a hack, and I'm trying to avoid a really common error which might be a
-    # race condition. [zipimport.ZipImportError: can't decompress data; zlib not available]
-    # This error only happens when cx_Freeze is used, and the app is launched.
+def load_ui(window, ui_name):
+    """Загружаем *.ui файл, а также XML версию файла"""
+    # Пытаемся загрузить UI файл 5 раз
+    # Этот хак пытается избежать распространенной ошибки, которая может возникнуть из за состояния гонки.
+    # [zipimport.ZipImportError: can't decompress data; zlib not available]
+    # состязание. [zipimport.ZipImportError: не удается распаковать данные; zlib недоступен]
+    # Эта ошибка возникает только при использовании cx_Freeze для запуска приложения.
+
+    path = os.path.join(PATH, 'view', 'ui', ui_name + '.ui')
     error = None
     for attempt in range(1, 6):
         try:
-            # Load ui from configured path
+            # Загрузка UI из файла
             uic.loadUi(path, window)
-
-            # Successfully loaded UI file, so clear any previously encountered errors
+            # UI файл успешно загружен, поэтому очищаем все ранее обнаруженные ошибки
             error = None
             break
-
         except Exception as ex:
-            # Keep track of this error
+            # Следим за ошибкой
             error = ex
             time.sleep(0.1)
 
-    # Raise error (if any)
+    # Возбуждаем ошибку, если есть
     if error:
         raise error
 
-    # Save xml tree for ui
+    # Сохраняем XML дерево для дальнейшего анализа
     window.uiTree = xml.etree.ElementTree.parse(path)
 
 
