@@ -5,10 +5,9 @@ from classes.app import App, get_app
 from classes.helper_function import get_icon
 from classes.constants import APP_NAME
 from classes.logger import log
-from view.helpers.actions import Actions
-from view.widgets.paragraphs import ParagraphsWidget
-from view.widgets.statistics import StatisticsWidget
 from resources import app_rc
+
+app = get_app()
 
 
 class MainWindow(QMainWindow):
@@ -16,49 +15,38 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         QMainWindow.__init__(self)
+        app_rc.qInitResources()
         self.current_file = ''
         self.recent_menu = None
 
         # Установливаем главное окно для ссылки на него во время инициализации потомков
-        get_app().window = self
+        app.window = self
 
         ui_util.load_ui(self, 'main_window')
         ui_util.init_ui(self)
 
-        app_rc.qInitResources()
+        # Настройка панелей инструментов, которые не находятся в главном окне,
+        # установка начального состояния элементов и т. д
+        # self.setup_toolbars()
+
         self.setWindowIcon(get_icon('app.svg'))
         self.restore_window_settings()
-        self.actions = Actions(self)
-        self.create_toolbars()
-        self.create_dock_windows()
+        # self.actions = Actions(self)
+        # self.create_toolbars()
+        # self.create_dock_windows()
         self.set_current_file('')
         self.show()
 
     def restore_window_settings(self):
         """Загрузка настроек размера и положения окна"""
-        self.restoreGeometry(App.settings.value("Geometry", QByteArray()))
-        self.restoreState(App.settings.value("Window State", QByteArray()))
+        self.restoreGeometry(app.settings.value("Geometry", QByteArray()))
+        self.restoreState(app.settings.value("Window State", QByteArray()))
+        self.action_view_toolbar.setChecked(self.tool_bar.isVisibleTo(self))
 
     def save_window_settings(self):
         """Сохранение настроек размера и положения окна"""
-        App.settings.setValue("Geometry", self.saveGeometry())
-        App.settings.setValue("Window State", self.saveState())
-
-    def create_toolbars(self):
-        self.fileToolBar = self.addToolBar("File")
-        self.fileToolBar.addAction(self.actions.new_letter1)
-        self.fileToolBar.addAction(self.actions.new_letter)
-        self.fileToolBar.addAction(self.actions.save)
-        self.fileToolBar.addAction(self.actions.print)
-        self.fileToolBar.addAction(self.actions.print1)
-        self.fileToolBar.addAction(self.actions.print2)
-
-    def create_dock_windows(self):
-        dock = StatisticsWidget(self)
-        self.view_menu.addAction(dock.toggleViewAction())
-
-        dock = ParagraphsWidget(self)
-        self.view_menu.addAction(dock.toggleViewAction())
+        app.settings.setValue("Geometry", self.saveGeometry())
+        app.settings.setValue("Window State", self.saveState())
 
     def closeEvent(self, event):
         log.info('------------------ Выключение ------------------')

@@ -1,5 +1,7 @@
 <RCC>
-  <qresource prefix="/icon">
-    <file>icons/Material/actions/database-refresh.svg</file>
+  <qresource prefix="/icons">
+    <file>Material/actions/tools.svg</file>
+    <file>Material/actions/power.svg</file>
+    <file>Material/actions/database-refresh.svg</file>
   </qresource>
 </RCC>
