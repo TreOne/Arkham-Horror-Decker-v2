@@ -134,13 +134,11 @@ def connect_auto_events(window, elem, name):
     if hasattr(elem, 'trigger'):
         func_name = name + "_trigger"
         if hasattr(window, func_name) and callable(getattr(window, func_name)):
-            func = getattr(window, func_name)
-            elem.triggered.connect(func)
+            elem.triggered.connect(getattr(window, func_name))
     if hasattr(elem, 'click'):
         func_name = name + "_click"
         if hasattr(window, func_name) and callable(getattr(window, func_name)):
-            func = getattr(window, func_name)
-            elem.clicked.connect(func)
+            elem.clicked.connect(getattr(window, func_name))
 
 
 def init_ui(window):
