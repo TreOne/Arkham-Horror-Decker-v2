@@ -128,19 +128,43 @@ class App(QApplication):
             self.setStyle(QStyleFactory.create("Fusion"))
 
             dark_palette = self.palette()
+
             dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
             dark_palette.setColor(QPalette.WindowText, Qt.white)
+            dark_palette.setColor(QPalette.WindowText, Qt.white)
+            dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
             dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
             dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+            dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
             dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
+            dark_palette.setColor(QPalette.Light, QColor(68, 68, 68))
             dark_palette.setColor(QPalette.ToolTipText, Qt.white)
             dark_palette.setColor(QPalette.Text, Qt.white)
+            dark_palette.setColor(QPalette.Text, Qt.white)
+            dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
             dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
             dark_palette.setColor(QPalette.ButtonText, Qt.white)
+            dark_palette.setColor(QPalette.ButtonText, Qt.white)
             dark_palette.setColor(QPalette.BrightText, Qt.red)
+            dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218, 192))
             dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
             dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+            dark_palette.setColor(QPalette.HighlightedText, Qt.black)
             dark_palette.setColor(QPalette.Disabled, QPalette.Text, QColor(104, 104, 104))
+
+            # Disabled palette
+            dark_palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(255, 255, 255, 128))
+            dark_palette.setColor(QPalette.Disabled, QPalette.Base, QColor(68, 68, 68))
+            dark_palette.setColor(QPalette.Disabled, QPalette.Text, QColor(255, 255, 255, 128))
+            dark_palette.setColor(QPalette.Disabled, QPalette.Button, QColor(53, 53, 53, 128))
+            dark_palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(255, 255, 255, 128))
+            dark_palette.setColor(QPalette.Disabled, QPalette.Highlight, QColor(151, 151, 151, 192))
+            dark_palette.setColor(QPalette.Disabled, QPalette.HighlightedText, Qt.black)
+
+            # Tooltips
+            dark_palette.setColor(QPalette.ToolTipBase, QColor(42, 130, 218))
+            dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+
             self.setPalette(dark_palette)
             self.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 0px solid white; }")
 
@@ -156,18 +180,10 @@ class App(QApplication):
         self.window = MainWindow()
 
         log.info("------------------------------------------------")
-        log.info("Инициализаций приложения завершена".center(48))
+        log.info("Инициализация приложения завершена".center(48))
         elapsed_time = time.time() - self.__start_time
         log.info(("Потребовалось времени: %.3f сек" % elapsed_time).center(48))
         log.info("------------------------------------------------")
-
-        # self._apply_theme()
-
-    def _apply_theme(self):
-        """Внешний вид приложения"""
-        theme_style = self.settings.value("Theme", "Fusion")
-        if theme_style == "Fusion":
-            self.setStyle("Fusion")
 
     @pyqtSlot()
     def on_log_the_end(self):

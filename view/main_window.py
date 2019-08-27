@@ -21,17 +21,11 @@ class MainWindow(QMainWindow):
         self.current_file = ''
         self.recent_menu = None
 
-        # set window on app for reference during initialization of children
+        # Установливаем главное окно для ссылки на него во время инициализации потомков
         get_app().window = self
 
-        # Load UI from designer
         ui_util.load_ui(self, self.ui_path)
-
-        # Init Ui
         ui_util.init_ui(self)
-
-        # self.ui = Ui_MainWindow()
-        # self.ui.setupUi(self)
 
         self.setWindowIcon(get_icon('app.svg'))
         self.restore_window_settings()

@@ -1,5 +1,4 @@
 import time
-
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont, QIcon, QFontDatabase, QFontMetrics
 from classes.helper_function import resource_path
@@ -80,33 +79,48 @@ class ArkhamIcon(QIcon):
 
 
 class Symbol:
+    """Класс для ленивой загрузки и кэширования символов"""
+    _cache = dict()
+
+    def __getattr__(self, char):
+        if char not in self._cache:
+            self._cache[char] = ArkhamIcon(self.dict[char])
+        return self._cache[char]
+
     def __init__(self):
-        self.__start_time = time.time()
-        self.agility = ArkhamIcon(agility)
-        self.intellect = self.lore = ArkhamIcon(intellect)
-        self.strength = self.combat = ArkhamIcon(strength)
-        self.will = self.willpower = ArkhamIcon(will)
-        self.wild = ArkhamIcon(wild)
+        self.dict = {
+            "agility": agility,
+            "intellect": intellect,
+            "lore": intellect,
+            "strength": strength,
+            "combat": strength,
+            "will": will,
+            "willpower": will,
+            "wild": wild,
 
-        self.rogue = ArkhamIcon(rogue)
-        self.survivor = ArkhamIcon(survivor)
-        self.guardian = ArkhamIcon(guardian)
-        self.mystic = ArkhamIcon(mystic)
-        self.seeker = ArkhamIcon(seeker)
+            "rogue": rogue,
+            "survivor": survivor,
+            "guardian": guardian,
+            "mystic": mystic,
+            "seeker": seeker,
 
-        self.action = ArkhamIcon(action)
-        self.free = self.fast = self.lightning = ArkhamIcon(fast)
-        self.reaction = ArkhamIcon(reaction)
+            "action": action,
+            "fast": fast,
+            "free": fast,
+            "lightning": fast,
+            "reaction": reaction,
 
-        self.skull = ArkhamIcon(skull)
-        self.cultist = ArkhamIcon(cultist)
-        self.auto_fail = ArkhamIcon(auto_fail)
-        self.elder_thing = ArkhamIcon(elder_thing)
-        self.elder_sign = self.eldersign = ArkhamIcon(elder_sign)
-        self.tablet = ArkhamIcon(tablet)
+            "skull": skull,
+            "cultist": cultist,
+            "auto_fail": auto_fail,
+            "elder_thing": elder_thing,
+            "elder_sign": elder_sign,
+            "eldersign": elder_sign,
+            "tablet": tablet,
 
-        self.unique = ArkhamIcon(unique)
-        self.per_investigator = ArkhamIcon(per_investigator)
-        self.null = ArkhamIcon(null)
-        elapsed_time = time.time() - self.__start_time
-        log.info(("Загрузка Символов Аркхэма завершена за %.3f сек" % elapsed_time))
+            "unique": unique,
+            "per_investigator": per_investigator,
+            "null": null,
+        }
+
+        log.info("Подключен модуль Символы Аркхэма")

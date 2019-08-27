@@ -18,7 +18,6 @@ class StatisticsWidget(QDockWidget):
         ui_util.load_ui(self, self.ui_path)
         ui_util.init_ui(self)
 
-        # self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         parent.addDockWidget(Qt.RightDockWidgetArea, self)
 

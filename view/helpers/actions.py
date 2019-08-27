@@ -6,6 +6,7 @@ from classes.app import get_app
 class Actions:
     def __init__(self, parent):
         app = get_app()
+
         self.new_letter1 = QAction(app.symbol.fast, "&New Letter", parent)
         self.new_letter1.setShortcut(QKeySequence.New)
         self.new_letter1.setStatusTip("Create a new form letter")
