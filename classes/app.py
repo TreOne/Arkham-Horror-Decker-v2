@@ -1,11 +1,18 @@
+import os
+import sys
 import locale
 import platform
-import sys
 import traceback
-from PyQt5 import QtGui
-from PyQt5.QtCore import QTranslator, QSettings, pyqtSlot
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtCore import QTranslator, QSettings, pyqtSlot, Qt
+from PyQt5.QtGui import QFontDatabase, QFont, QPalette, QColor
+from PyQt5.QtWidgets import QApplication, QMessageBox, QStyleFactory
 from PyQt5.QtCore import QT_VERSION_STR, PYQT_VERSION_STR
+
+try:
+    # Включить High-DPI разрешение
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+except AttributeError:
+    pass  # Заглушка для старых Qt5 версий
 
 
 def get_app():
@@ -38,8 +45,7 @@ class App(QApplication):
             log.info(time.strftime("%d %B %Y %H:%M:%S", time.localtime()).center(48))  # Пример: 26 Август 2019 16:14:04
             log.info('Запуск новой сессии'.center(48))
 
-            from classes.helper_function import resource_path
-            from classes.symbols import Symbol
+            from classes import symbols, ui_util
 
             # Перенаправление stdout и stderr в логер
             reroute_output()
@@ -80,38 +86,81 @@ class App(QApplication):
         App.settings = QSettings()
 
         # Инициализация иконок
-        App.symbol = Symbol()
+        App.symbol = symbols.Symbol()
 
         # Инициализируемловца необработанных исключений
         from classes import exceptions
         sys.excepthook = exceptions.exception_handler
 
+        # Загрузить пользовательскую тему, если тема не задана ОС
+        ui_util.load_theme()
+
+        # Установить шрифт для всех тем
+        if self.settings.value("Theme") != "No Theme":
+            # Загрузить встроенный шрифт
+            try:
+                font_path = os.path.join(constants.RESOURCES_PATH, "fonts", "roboto.ttf")
+                log.info("Установка шрифта из %s" % font_path)
+                font_id = QFontDatabase.addApplicationFont(font_path)
+                font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+                font = QFont(font_family)
+                font.setPointSizeF(10.5)
+                QApplication.setFont(font)
+            except Exception as ex:
+                log.error("Ошибка установки шрифта roboto.ttf: %s" % str(ex))
+
+        # Загрузка кастомных шрифтов
+        try:
+            medieval_font_path = os.path.join(constants.RESOURCES_PATH, "fonts", "medieval.ttf")
+            log.info("Установка шрифта из %s" % medieval_font_path)
+            medieval_font_id = QFontDatabase.addApplicationFont(medieval_font_path)
+            medieval_font_family = QFontDatabase.applicationFontFamilies(medieval_font_id)[0]
+            medieval_font = QFont(medieval_font_family)
+            medieval_font.setPointSizeF(10.5)
+            self.settings.setValue("Medieval Font", medieval_font)
+        except Exception as ex:
+            log.error("Ошибка установки шрифта medieval.ttf: %s" % str(ex))
+
+        # Установить темную тему (экспериментальная опция)
+        if self.settings.value("theme") == "Humanity: Dark":
+            log.info("Установка тёмной темы")
+            self.setStyle(QStyleFactory.create("Fusion"))
+
+            dark_palette = self.palette()
+            dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+            dark_palette.setColor(QPalette.WindowText, Qt.white)
+            dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
+            dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+            dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
+            dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+            dark_palette.setColor(QPalette.Text, Qt.white)
+            dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+            dark_palette.setColor(QPalette.ButtonText, Qt.white)
+            dark_palette.setColor(QPalette.BrightText, Qt.red)
+            dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+            dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+            dark_palette.setColor(QPalette.Disabled, QPalette.Text, QColor(104, 104, 104))
+            self.setPalette(dark_palette)
+            self.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 0px solid white; }")
+
+        # Руссификация интерфейса QT
+        ru_qtbase_path = os.path.join(constants.RESOURCES_PATH, "qtbase_ru.qm")
+        log.info("Установка руссификации интерфейса QT из %s" % ru_qtbase_path)
+        translator = QTranslator(self)
+        translator.load(ru_qtbase_path)
+        self.installTranslator(translator)
+
         # Создаем главное окно приложения
         from view.main_window import MainWindow
         self.window = MainWindow()
 
-        self._apply_theme()
-        self._translate()
-        self._load_fonts()
+        # self._apply_theme()
 
     def _apply_theme(self):
         """Внешний вид приложения"""
-        theme_style = self.settings.value("Theme Style", "Fusion")
+        theme_style = self.settings.value("Theme", "Fusion")
         if theme_style == "Fusion":
             self.setStyle("Fusion")
-
-    def _translate(self):
-        """Руссификация интерфейса QT"""
-        from classes.helper_function import resource_path
-        translator = QTranslator(self)
-        translator.load(resource_path('resources/qtbase_ru.qm'))
-        self.installTranslator(translator)
-
-    def _load_fonts(self):
-        """Загрузка кастомных шрифтов"""
-        from classes.helper_function import resource_path
-        # Medieval
-        QtGui.QFontDatabase.addApplicationFont(resource_path('resources/fonts/medieval.ttf'))
 
     @pyqtSlot()
     def on_log_the_end(self):
@@ -125,8 +174,7 @@ class App(QApplication):
             log.info("================================================")
         except Exception:
             pass
-
-        # return 0 on success
+        # Возвращаем 0 в случае успеха
         return 0
 
     def run(self):
