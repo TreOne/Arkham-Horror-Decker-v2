@@ -1,8 +1,7 @@
 from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication, QDialog
 from classes import ui_util
-from classes.app import App, get_app
-from classes.helper_function import get_icon
+from classes.app import get_app
 from classes.constants import APP_NAME
 from classes.logger import log
 from resources import app_rc
@@ -29,7 +28,7 @@ class MainWindow(QMainWindow):
         # установка начального состояния элементов и т. д
         # self.setup_toolbars()
 
-        self.setWindowIcon(get_icon('app.svg'))
+        # self.setWindowIcon(get_icon('app.svg'))
         self.not_fullscreen_window_state = Qt.WindowNoState
         self.restore_window_settings()
         # self.actions = Actions(self)
@@ -61,13 +60,23 @@ class MainWindow(QMainWindow):
             event.ignore()
 
     def action_fullscreen_trigger(self, event):
-        # Переключить режим полного экрана
+        """Переключить режим полного экрана"""
         if not self.isFullScreen():
             # Сохраняем состояние окна, чтобы можно было вернуться к нему
             self.not_fullscreen_window_state = self.windowState()
             self.showFullScreen()
         else:
             self.setWindowState(self.not_fullscreen_window_state)
+
+    def action_about_trigger(self, event):
+        """Отобразить диалог О программе"""
+        from view.about import About
+        win = About()
+        result = win.exec_()
+        if result == QDialog.Accepted:
+            log.info('Отображено окно "О программе"')
+        else:
+            log.info('Отображение окна "О программе" прервано')
 
     def maybe_save(self):
         is_modified = False

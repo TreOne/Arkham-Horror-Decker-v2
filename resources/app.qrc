@@ -1,9 +1,11 @@
 <RCC>
   <qresource prefix="/icons">
     <file>Material/actions/dock-right.svg</file>
-    <file>Material/actions/fullscreen.svg</file>
-    <file>Material/actions/tools.svg</file>
     <file>Material/actions/power.svg</file>
+    <file>Material/actions/information.svg</file>
     <file>Material/actions/database-refresh.svg</file>
+  </qresource>
+  <qresource prefix="/">
+    <file>app.svg</file>
   </qresource>
 </RCC>

@@ -10,8 +10,21 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Arkham Horror Decker</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../resources/app.qrc">
+    <normaloff>:/app.svg</normaloff>:/app.svg</iconset>
+  </property>
+  <property name="documentMode">
+   <bool>true</bool>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="central_widget">
    <layout class="QHBoxLayout" name="horizontalLayout_4"/>
@@ -131,6 +144,10 @@
    </property>
   </action>
   <action name="action_about">
+   <property name="icon">
+    <iconset theme="information" resource="../../resources/app.qrc">
+     <normaloff>:/icons/Material/actions/information.svg</normaloff>:/icons/Material/actions/information.svg</iconset>
+   </property>
    <property name="text">
     <string>&amp;О программе</string>
    </property>
