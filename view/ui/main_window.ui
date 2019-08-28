@@ -29,7 +29,19 @@
     <property name="title">
      <string>&amp;Вид</string>
     </property>
+    <widget class="QMenu" name="menu_dock_widgets">
+     <property name="title">
+      <string>&amp;Боковые панели</string>
+     </property>
+     <property name="icon">
+      <iconset theme="dock-right" resource="../../resources/app.qrc">
+       <normaloff>:/icons/Material/actions/dock-right.svg</normaloff>:/icons/Material/actions/dock-right.svg</iconset>
+     </property>
+    </widget>
     <addaction name="action_view_toolbar"/>
+    <addaction name="action_fullscreen"/>
+    <addaction name="separator"/>
+    <addaction name="menu_dock_widgets"/>
    </widget>
    <widget class="QMenu" name="menu_file">
     <property name="title">
@@ -40,7 +52,7 @@
    <addaction name="menu_file"/>
    <addaction name="menu_view"/>
   </widget>
-  <widget class="QToolBar" name="tool_bar">
+  <widget class="QToolBar" name="toolbar">
    <property name="windowTitle">
     <string>Панель инструментов</string>
    </property>
@@ -52,6 +64,7 @@
    </attribute>
    <addaction name="actionUpdateDB"/>
   </widget>
+  <widget class="QStatusBar" name="statubar"/>
   <action name="actionUpdateDB">
    <property name="icon">
     <iconset theme="database-refresh" resource="../../resources/app.qrc">
@@ -100,6 +113,24 @@
     <enum>QAction::QuitRole</enum>
    </property>
   </action>
+  <action name="action_fullscreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="fullscreen" resource="../../resources/app.qrc">
+     <normaloff>:/icons/Material/actions/fullscreen.svg</normaloff>:/icons/Material/actions/fullscreen.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Полный &amp;экран</string>
+   </property>
+   <property name="toolTip">
+    <string>Развернуть окно на полный экран</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../resources/app.qrc"/>
@@ -108,7 +139,7 @@
   <connection>
    <sender>action_view_toolbar</sender>
    <signal>toggled(bool)</signal>
-   <receiver>tool_bar</receiver>
+   <receiver>toolbar</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">

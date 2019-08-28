@@ -30,6 +30,7 @@ class MainWindow(QMainWindow):
         # self.setup_toolbars()
 
         self.setWindowIcon(get_icon('app.svg'))
+        self.not_fullscreen_window_state = Qt.WindowNoState
         self.restore_window_settings()
         # self.actions = Actions(self)
         # self.create_toolbars()
@@ -41,7 +42,10 @@ class MainWindow(QMainWindow):
         """Загрузка настроек размера и положения окна"""
         self.restoreGeometry(app.settings.value("Geometry", QByteArray()))
         self.restoreState(app.settings.value("Window State", QByteArray()))
-        self.action_view_toolbar.setChecked(self.tool_bar.isVisibleTo(self))
+
+        # Устанавливаем флаги в меню в соответствии с состояниями элементов
+        self.action_view_toolbar.setChecked(self.toolbar.isVisibleTo(self))
+        self.action_fullscreen.setChecked(self.isFullScreen())
 
     def save_window_settings(self):
         """Сохранение настроек размера и положения окна"""
@@ -55,6 +59,15 @@ class MainWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
+    def action_fullscreen_trigger(self, event):
+        # Переключить режим полного экрана
+        if not self.isFullScreen():
+            # Сохраняем состояние окна, чтобы можно было вернуться к нему
+            self.not_fullscreen_window_state = self.windowState()
+            self.showFullScreen()
+        else:
+            self.setWindowState(self.not_fullscreen_window_state)
 
     def maybe_save(self):
         is_modified = False
