@@ -49,8 +49,15 @@
     </property>
     <addaction name="action_quit"/>
    </widget>
+   <widget class="QMenu" name="menu_help">
+    <property name="title">
+     <string>&amp;Справка</string>
+    </property>
+    <addaction name="action_about"/>
+   </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_view"/>
+   <addaction name="menu_help"/>
   </widget>
   <widget class="QToolBar" name="toolbar">
    <property name="windowTitle">
@@ -84,10 +91,6 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon">
-    <iconset theme="tools" resource="../../resources/app.qrc">
-     <normaloff>:/icons/Material/actions/tools.svg</normaloff>:/icons/Material/actions/tools.svg</iconset>
-   </property>
    <property name="text">
     <string>Панель инструментов</string>
    </property>
@@ -117,10 +120,6 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon">
-    <iconset theme="fullscreen" resource="../../resources/app.qrc">
-     <normaloff>:/icons/Material/actions/fullscreen.svg</normaloff>:/icons/Material/actions/fullscreen.svg</iconset>
-   </property>
    <property name="text">
     <string>Полный &amp;экран</string>
    </property>
@@ -129,6 +128,11 @@
    </property>
    <property name="shortcut">
     <string>F11</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>&amp;О программе</string>
    </property>
   </action>
  </widget>
