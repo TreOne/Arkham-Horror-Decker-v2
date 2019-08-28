@@ -17,8 +17,9 @@ HOME_PATH = os.path.join(os.path.expanduser("~"))
 USER_PATH = os.path.join(HOME_PATH, f".{APP_NAME_WITHOUT_SPACES}")
 
 RESOURCES_PATH = os.path.join(PATH, "resources")
+BACKUP_PATH = os.path.join(USER_PATH, "backup")
 
 # Создаем пути, если они не существуют
-for folder in [USER_PATH, RESOURCES_PATH]:
+for folder in [USER_PATH, RESOURCES_PATH, BACKUP_PATH]:
     if not os.path.exists(folder.encode("UTF-8")):
         os.makedirs(folder, exist_ok=True)

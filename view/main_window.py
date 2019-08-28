@@ -1,13 +1,16 @@
-from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal
+import os
+
+from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication
-from classes import ui_util
-from classes.app import get_app
+from classes import ui_util, constants
+from classes.app import get_app, get_settings
 from classes.constants import APP_NAME
 from classes.logger import log
 from classes.version_checker import get_current_version
 from resources import app_rc
 
 app = get_app()
+settings = get_settings()
 
 
 class MainWindow(QMainWindow):
@@ -34,6 +37,18 @@ class MainWindow(QMainWindow):
         self.not_fullscreen_window_state = Qt.WindowNoState
         self.restore_window_settings()
 
+        self.setCorner(Qt.TopLeftCorner, Qt.LeftDockWidgetArea)
+        self.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
+        self.setCorner(Qt.TopRightCorner, Qt.RightDockWidgetArea)
+        self.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
+
+        # QTimer для Автосохранений
+        self.auto_save_timer = QTimer(self)
+        self.auto_save_timer.setInterval(settings.value("autosave-interval", 5) * 1000 * 60)
+        self.auto_save_timer.timeout.connect(self.auto_save_project)
+        if settings.value("enable-auto-save", True):
+            self.auto_save_timer.start()
+
         self.set_current_file('')
         self.show()
 
@@ -56,6 +71,40 @@ class MainWindow(QMainWindow):
         """Сохранение настроек размера и положения окна"""
         app.settings.setValue("Geometry", self.saveGeometry())
         app.settings.setValue("Window State", self.saveState())
+
+    def auto_save_project(self):
+        """Автосохранение проекта"""
+        # TODO: Доделать метод
+        # Get current filepath (if any)
+        file_path = get_app().project.current_filepath
+        if get_app().project.needs_save():
+            log.info("auto_save_project")
+
+            if file_path:
+                # A Real project file exists
+                # Append .osp if needed
+                if ".osp" not in file_path:
+                    file_path = "%s.osp" % file_path
+
+                # Save project
+                log.info("Auto save project file: %s" % file_path)
+                self.save_project(file_path)
+
+                # Remove backup.osp (if any)
+                recovery_path = os.path.join(constants.BACKUP_PATH, "backup.osp")
+                if os.path.exists(recovery_path):
+                    # Delete backup.osp since we just saved the actual project
+                    os.unlink(recovery_path)
+
+            else:
+                # No saved project found
+                recovery_path = os.path.join(constants.BACKUP_PATH, "backup.osp")
+                log.info("Creating backup of project file: %s" % recovery_path)
+                get_app().project.save(recovery_path, move_temp_files=False, make_paths_relative=False)
+
+                # Clear the file_path (which is set by saving the project)
+                get_app().project.current_filepath = None
+                get_app().project.has_unsaved_changes = True
 
     def closeEvent(self, event):
         log.info('------------------ Выключение ------------------')
