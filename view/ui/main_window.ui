@@ -145,8 +145,8 @@
   </action>
   <action name="action_about">
    <property name="icon">
-    <iconset theme="information" resource="../../resources/app.qrc">
-     <normaloff>:/icons/Material/actions/information.svg</normaloff>:/icons/Material/actions/information.svg</iconset>
+    <iconset theme="information-outline" resource="../../resources/app.qrc">
+     <normaloff>:/icons/Material/actions/information-outline.svg</normaloff>:/icons/Material/actions/information-outline.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;О программе</string>

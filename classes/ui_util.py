@@ -77,7 +77,7 @@ def setup_icon(window, elem, name, theme_name=None):
         type_filter = 'widget'
     # Найти набор иконок в дереве (если есть)
     iconset = window.uiTree.find('.//' + type_filter + '[@name="' + name + '"]/property[@name="icon"]/iconset')
-    if iconset != None or theme_name:  # TODO: По какой-то причине "if iconset:" работает не так же как "!= None"
+    if iconset is not None or theme_name:
         if not theme_name:
             theme_name = iconset.get('theme', '')
         # Получить иконку (текущая тема или версия по умолчанию)
