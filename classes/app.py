@@ -177,7 +177,7 @@ class App(QApplication):
 
         # Создаем главное окно приложения
         from view.main_window import MainWindow
-        self.window = MainWindow()
+        MainWindow()
 
         log.info("------------------------------------------------")
         log.info("Инициализация приложения завершена".center(48))

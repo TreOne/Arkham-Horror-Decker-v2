@@ -4,3 +4,4 @@
 
 ## Для работы приложения установите следующие пакеты:
 * pip install PyQt5
+* pip install requests

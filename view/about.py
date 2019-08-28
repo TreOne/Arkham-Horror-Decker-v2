@@ -8,12 +8,10 @@ from classes.logger import log
 class About(QDialog):
     """Окно 'О программе'"""
 
-    ui_path = os.path.join('about')
-
     def __init__(self):
         QDialog.__init__(self)
 
-        ui_util.load_ui(self, self.ui_path)
+        ui_util.load_ui(self, 'about')
         ui_util.init_ui(self)
 
         version_text = "Версия: %s" % constants.VERSION
@@ -50,7 +48,6 @@ class About(QDialog):
 
     def load_license(self):
         """Открыть окно Лицензия"""
-        log.info('Открыто окно "Лицензия"')
         win = License()
         win.exec_()
 
@@ -58,12 +55,10 @@ class About(QDialog):
 class License(QDialog):
     """Окно 'Лицензия'"""
 
-    ui_path = os.path.join('license')
-
     def __init__(self):
         QDialog.__init__(self)
 
-        ui_util.load_ui(self, self.ui_path)
+        ui_util.load_ui(self, 'license')
         ui_util.init_ui(self)
 
         # Инициализация лицензии

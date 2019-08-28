@@ -142,7 +142,7 @@ def connect_auto_events(window, elem, name):
 
 def init_ui(window):
     """Инициализация всех дочерних виджетов и экшенов окна"""
-    log.info('Инициализация пользовательского интерфейса для {}'.format(window.objectName()))
+    log.info('Инициализация пользовательского интерфейса для {} ({})'.format(window.objectName(), window.windowTitle()))
 
     try:
         if hasattr(window, 'setWindowTitle') and window.windowTitle() != "":

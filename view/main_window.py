@@ -1,9 +1,10 @@
-from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication, QDialog
+from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication
 from classes import ui_util
 from classes.app import get_app
 from classes.constants import APP_NAME
 from classes.logger import log
+from classes.version_checker import get_current_version
 from resources import app_rc
 
 app = get_app()
@@ -11,6 +12,8 @@ app = get_app()
 
 class MainWindow(QMainWindow):
     """Главное окно"""
+
+    found_version_signal = pyqtSignal(str)
 
     def __init__(self):
         QMainWindow.__init__(self)
@@ -24,18 +27,21 @@ class MainWindow(QMainWindow):
         ui_util.load_ui(self, 'main_window')
         ui_util.init_ui(self)
 
-        # Настройка панелей инструментов, которые не находятся в главном окне,
-        # установка начального состояния элементов и т. д
-        # self.setup_toolbars()
+        # Получить данные о текущей версии приложения через HTTP
+        self.found_version_signal.connect(self.found_current_version)
+        get_current_version()
 
-        # self.setWindowIcon(get_icon('app.svg'))
         self.not_fullscreen_window_state = Qt.WindowNoState
         self.restore_window_settings()
-        # self.actions = Actions(self)
-        # self.create_toolbars()
-        # self.create_dock_windows()
+
         self.set_current_file('')
         self.show()
+
+    @pyqtSlot(str)
+    def found_current_version(self, version):
+        """Обработка полученного ответа о текущей версии приложения на сайте"""
+        log.info('found_current_version: Обнаружена персия приложения: %s' % version)
+        # TODO: Доделать определение версии приложения.
 
     def restore_window_settings(self):
         """Загрузка настроек размера и положения окна"""
