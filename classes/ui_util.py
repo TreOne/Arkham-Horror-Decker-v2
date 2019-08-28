@@ -34,7 +34,6 @@ def load_ui(window, ui_name):
     # Пытаемся загрузить UI файл 5 раз
     # Этот хак пытается избежать распространенной ошибки, которая может возникнуть из за состояния гонки.
     # [zipimport.ZipImportError: can't decompress data; zlib not available]
-    # состязание. [zipimport.ZipImportError: не удается распаковать данные; zlib недоступен]
     # Эта ошибка возникает только при использовании cx_Freeze для запуска приложения.
 
     path = os.path.join(PATH, 'view', 'ui', ui_name + '.ui')

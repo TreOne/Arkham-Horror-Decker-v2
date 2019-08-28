@@ -18,7 +18,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../../resources/app.qrc">
-    <normaloff>:/app.svg</normaloff>:/app.svg</iconset>
+    <normaloff>:/images/app.svg</normaloff>:/images/app.svg</iconset>
   </property>
   <property name="documentMode">
    <bool>true</bool>

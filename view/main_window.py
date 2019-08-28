@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         self.current_file = ''
         self.recent_menu = None
 
-        # Установливаем главное окно для ссылки на него во время инициализации потомков
+        # Устанавливаем главное окно для ссылки на него во время инициализации потомков
         app.window = self
 
         ui_util.load_ui(self, 'main_window')
@@ -72,11 +72,7 @@ class MainWindow(QMainWindow):
         """Отобразить диалог О программе"""
         from view.about import About
         win = About()
-        result = win.exec_()
-        if result == QDialog.Accepted:
-            log.info('Отображено окно "О программе"')
-        else:
-            log.info('Отображение окна "О программе" прервано')
+        win.exec_()
 
     def maybe_save(self):
         is_modified = False

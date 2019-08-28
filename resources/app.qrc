@@ -6,6 +6,7 @@
     <file>Material/actions/database-refresh.svg</file>
   </qresource>
   <qresource prefix="/">
-    <file>app.svg</file>
+    <file>images/app.svg</file>
+    <file>images/about_logo.png</file>
   </qresource>
 </RCC>

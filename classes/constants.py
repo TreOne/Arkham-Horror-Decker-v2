@@ -5,9 +5,10 @@ VERSION = "2.1"
 APP_NAME = "Cards of Arkham"
 APP_NAME_ABBR = "COA"
 APP_NAME_RUS = "Карты Аркхэма"
-DESCRIPTION = "Помощник по созданеию колод"
+DESCRIPTION = "Помощник по изучению колод"
 AUTHOR = "TreOne"
-COPYRIGHT = "Copyright (c) 2018-%s %s" % (datetime.now().year, AUTHOR)
+AUTHOR_EMAIL = "tre@tre.one"
+COPYRIGHT = "Все права защищены. (c) 2018-%s %s" % (datetime.now().year, AUTHOR)
 
 APP_NAME_WITHOUT_SPACES = APP_NAME.lower().replace(" ", "-")
 CWD = os.getcwd()

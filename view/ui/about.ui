@@ -10,30 +10,30 @@
     <height>455</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="maximumSize">
    <size>
     <width>620</width>
     <height>811</height>
    </size>
   </property>
-  <property name="cursor">
-   <cursorShape>ArrowCursor</cursorShape>
-  </property>
   <property name="windowTitle">
-   <string>About OpenShot</string>
+   <string>О программе</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../images/openshot.qrc">
-    <normaloff>:/openshot.svg</normaloff>:/openshot.svg</iconset>
-  </property>
-  <property name="locale">
-   <locale language="English" country="UnitedStates"/>
+   <iconset resource="../../resources/app.qrc">
+    <normaloff>:/images/app.svg</normaloff>:/images/app.svg</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="3">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="about_logo">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -41,12 +41,12 @@
         </sizepolicy>
        </property>
        <property name="pixmap">
-        <pixmap  resource="../../images/openshot.qrc">:/about/AboutLogo.png</pixmap>
+        <pixmap resource="../../resources/app.qrc">:/images/about_logo.png</pixmap>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="txtversion">
+      <widget class="QLabel" name="lbl_version">
        <property name="autoFillBackground">
         <bool>true</bool>
        </property>
@@ -62,7 +62,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="lblAboutDescription">
+      <widget class="QLabel" name="lbl_about_description">
        <property name="text">
         <string/>
        </property>
@@ -75,7 +75,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="lblAboutCompany">
+      <widget class="QLabel" name="lbl_about_autor">
        <property name="text">
         <string notr="true"/>
        </property>
@@ -90,30 +90,31 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="btncredit">
+        <widget class="QPushButton" name="btn_license">
+         <property name="locale">
+          <locale language="Russian" country="Russia"/>
+         </property>
          <property name="text">
-          <string>Credits</string>
+          <string>&amp;Информация о лицензии</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnlicense">
-         <property name="text">
-          <string>License</string>
+        <widget class="QPushButton" name="btn_close">
+         <property name="locale">
+          <locale language="Russian" country="Russia"/>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnchangelog">
          <property name="text">
-          <string>Changelog</string>
+          <string>&amp;Закрыть</string>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_3">
-         <property name="text">
-          <string>Close</string>
+         <property name="shortcut">
+          <string>Ctrl+Q</string>
+         </property>
+         <property name="default">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -123,10 +124,12 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resources/app.qrc"/>
+ </resources>
  <connections>
   <connection>
-   <sender>pushButton_3</sender>
+   <sender>btn_close</sender>
    <signal>clicked()</signal>
    <receiver>Dialog</receiver>
    <slot>reject()</slot>
