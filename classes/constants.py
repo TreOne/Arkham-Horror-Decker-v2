@@ -6,6 +6,7 @@ APP_NAME = "Cards of Arkham"
 APP_NAME_ABBR = "COA"
 APP_NAME_RUS = "Карты Аркхэма"
 DESCRIPTION = "Помощник по изучению колод"
+APP_SITE = "http://coa.tre.one"
 AUTHOR = "TreOne"
 AUTHOR_EMAIL = "tre@tre.one"
 COPYRIGHT = "Все права защищены. (c) 2018-%s %s" % (datetime.now().year, AUTHOR)
@@ -18,8 +19,9 @@ USER_PATH = os.path.join(HOME_PATH, f".{APP_NAME_WITHOUT_SPACES}")
 
 RESOURCES_PATH = os.path.join(PATH, "resources")
 BACKUP_PATH = os.path.join(USER_PATH, "backup")
+PROJECTS_PATH = os.path.join(USER_PATH, "projects")
 
 # Создаем пути, если они не существуют
-for folder in [USER_PATH, RESOURCES_PATH, BACKUP_PATH]:
+for folder in [USER_PATH, RESOURCES_PATH, BACKUP_PATH, PROJECTS_PATH]:
     if not os.path.exists(folder.encode("UTF-8")):
         os.makedirs(folder, exist_ok=True)

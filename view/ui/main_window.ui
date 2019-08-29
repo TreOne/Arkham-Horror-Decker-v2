@@ -82,10 +82,10 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionUpdateDB"/>
+   <addaction name="action_update_db"/>
   </widget>
   <widget class="QStatusBar" name="statubar"/>
-  <action name="actionUpdateDB">
+  <action name="action_update_db">
    <property name="icon">
     <iconset theme="database-refresh" resource="../../resources/app.qrc">
      <normaloff>:/icons/Material/actions/database-refresh.svg</normaloff>:/icons/Material/actions/database-refresh.svg</iconset>
@@ -150,6 +150,21 @@
    </property>
    <property name="text">
     <string>&amp;О программе</string>
+   </property>
+  </action>
+  <action name="action_update_app">
+   <property name="icon">
+    <iconset theme="new-box" resource="../../resources/app.qrc">
+     <normaloff>:/icons/Material/actions/new-box.svg</normaloff>:/icons/Material/actions/new-box.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Доступно обновление</string>
+   </property>
+   <property name="toolTip">
+    <string>Доступно обновление</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>

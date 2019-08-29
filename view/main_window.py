@@ -1,12 +1,12 @@
 import os
+import webbrowser
 
 from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication, QSizePolicy, QWidget, QToolButton
 from classes import ui_util, constants
 from classes.app import get_app, get_settings
-from classes.constants import APP_NAME
 from classes.logger import log
-from classes.version_checker import get_current_version
+from classes.version import get_current_version
 from resources import app_rc
 
 app = get_app()
@@ -53,10 +53,37 @@ class MainWindow(QMainWindow):
         self.show()
 
     @pyqtSlot(str)
-    def found_current_version(self, version):
+    def found_current_version(self, new_version):
         """Обработка полученного ответа о текущей версии приложения на сайте"""
-        log.info('found_current_version: Обнаружена персия приложения: %s' % version)
-        # TODO: Доделать определение версии приложения.
+        log.info('Текущая версия приложения:  %s (На сайте: %s)' % (constants.VERSION, new_version))
+
+        # Сравнение версий (алфавитное сравнение строк версий должно работать нормально)
+        if constants.VERSION < new_version:
+            # Добавить разделитель и кнопку "Новая версия доступна" на панели инструментов (по умолчанию скрыта)
+            spacer = QWidget(self)
+            spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            self.toolbar.addWidget(spacer)
+
+            # Установить текст для QAction
+            self.action_update_app.setVisible(True)
+            self.action_update_app.setText("Доступно обновление")
+            self.action_update_app.setToolTip("Доступно обновление: <b>%s</b>" % new_version)
+
+            # Добавить кнопку Обновление доступно (с иконкой и текстом)
+            update_button = QToolButton()
+            update_button.setDefaultAction(self.action_update_app)
+            update_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+            self.toolbar.addWidget(update_button)
+
+    def action_update_app_trigger(self, event):
+        download_url = constants.APP_SITE + "/download"
+        try:
+            webbrowser.open(download_url)
+            log.info("Успешно открыта страница скачивания новой версии")
+        except:
+            QMessageBox.warning(self, "Ошибка!", "Не удается открыть страницу загрузки обновления!<br>"
+                                                 "Попробуйте сделать это вручную:<br>"
+                                                 "<a href='{url}'>{url}</a>" .format(url=download_url))
 
     def restore_window_settings(self):
         """Загрузка настроек размера и положения окна"""
@@ -132,8 +159,8 @@ class MainWindow(QMainWindow):
     def maybe_save(self):
         is_modified = False
         if is_modified:
-            ret = QMessageBox.warning(self, APP_NAME, "У вас остались несохраненные изменения.\n"
-                                                      "Хотите ли вы сохранить измененния?",
+            ret = QMessageBox.warning(self, constants.APP_NAME, "У вас остались несохраненные изменения.\n"
+                                                                "Хотите ли вы сохранить измененния?",
                                       QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
             if ret == QMessageBox.Save:
                 return self.save()
@@ -155,7 +182,8 @@ class MainWindow(QMainWindow):
     def save_file(self, file_name):
         file = QFile(file_name)
         if not file.open(QFile.WriteOnly | QFile.Text):
-            QMessageBox.warning(self, APP_NAME, "Запись в файл невозможна %s:\n%s." % (file_name, file.errorString()))
+            QMessageBox.warning(self, constants.APP_NAME,
+                                "Запись в файл невозможна %s:\n%s." % (file_name, file.errorString()))
             return False
 
         out_file = QTextStream(file)

@@ -14,13 +14,12 @@ def get_current_version():
 def _get_version_from_http():
     """Проверяет текущую версию приложения на сайте"""
 
-    url = "http://coa.tre.one/version/json/"
+    url = constants.APP_SITE + "/version/json/"
 
     try:
         r = requests.get(url, headers={"user-agent": "%s-%s" % (constants.APP_NAME_WITHOUT_SPACES,
                                                                 constants.VERSION)}, verify=False)
-        log.info("На сайте обнаружена версия приложения: %s" % r.text)
         app_version = r.json()["app_version"]
-        get_app().window.FoundVersionSignal.emit(app_version)
+        get_app().window.found_version_signal.emit(app_version)
     except:
-        log.error("Не удалось получить данные о версии из: %s" % url)
+        log.error("Не удалось получить данные о версии с сайта %s" % url)
