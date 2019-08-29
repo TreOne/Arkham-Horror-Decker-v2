@@ -13,16 +13,18 @@ COPYRIGHT = "Все права защищены. (c) 2018-%s %s" % (datetime.now
 
 APP_NAME_WITHOUT_SPACES = APP_NAME.lower().replace(" ", "-")
 CWD = os.getcwd()
+
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))  # Каталог приложения
+RESOURCES_PATH = os.path.join(PATH, "resources")
+DEFAULT_PROJECT_PATH = os.path.join(RESOURCES_PATH, "default")
+
 HOME_PATH = os.path.join(os.path.expanduser("~"))
 USER_PATH = os.path.join(HOME_PATH, f".{APP_NAME_WITHOUT_SPACES}")
-
-RESOURCES_PATH = os.path.join(PATH, "resources")
 IMAGES_PATH = os.path.join(USER_PATH, "images")
 BACKUP_PATH = os.path.join(USER_PATH, "backup")
 PROJECTS_PATH = os.path.join(USER_PATH, "projects")
 
 # Создаем пути, если они не существуют
-for folder in [USER_PATH, RESOURCES_PATH, IMAGES_PATH, BACKUP_PATH, PROJECTS_PATH]:
+for folder in [USER_PATH, IMAGES_PATH, BACKUP_PATH, PROJECTS_PATH]:
     if not os.path.exists(folder.encode("UTF-8")):
         os.makedirs(folder, exist_ok=True)

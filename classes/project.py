@@ -1,10 +1,13 @@
 import glob
 import os
+import random
 import shutil
-
 from classes import constants
+from classes.app import get_settings
 from classes.json_data import JsonDataStore
 from classes.logger import log
+
+settings = get_settings()
 
 
 class ProjectDataStore(JsonDataStore):
@@ -12,16 +15,16 @@ class ProjectDataStore(JsonDataStore):
     def __init__(self):
         JsonDataStore.__init__(self)
         self.data_type = "данные проекта"  # Используется в сообщениях об ошибках
-        self.default_project_filepath = os.path.join(constants.PROJECTS_PATH, 'default', '_default.project')
+        self.default_project_filepath = os.path.join(constants.DEFAULT_PROJECT_PATH, '_default.project')
 
         # Путь по умолчанию
         self.current_filepath = None
 
-        # Track changes after save
+        # Отслеживание изменений в проекте
         self.has_unsaved_changes = False
 
-        # Load default project data on creation
-        # self.new()
+        # Загружаем настройки по умолчанию
+        self.load_default_project_settings()
 
     def needs_save(self):
         """Возвращает информацию о необходимости сохранения проекта"""
@@ -43,8 +46,7 @@ class ProjectDataStore(JsonDataStore):
         self.current_filepath = file_path
 
         # Добавляем в "Последние файлы"
-        # TODO: Раскомментировать, когда будет доделана система Последние файлы
-        # self.add_to_recent_files(file_path)
+        self.add_to_recent_files(file_path)
 
         self.has_unsaved_changes = False
 
@@ -64,3 +66,49 @@ class ProjectDataStore(JsonDataStore):
 
         except Exception as ex:
             log.error("Ошибка при перемещении временных файлов в папку проекта: %s" % str(ex))
+
+    def add_to_recent_files(self, file_path):
+        """Добавить проект в список 'Последние файлы'"""
+        if not file_path or "backup.coa" in file_path:
+            return  # Не добавлять резервную копию в список
+
+        recent_projects = settings.value("recent_projects")
+
+        # Проверяем, что file_path является абсолютным
+        file_path = os.path.abspath(file_path)
+
+        # Удаляем существующий проект
+        if file_path in recent_projects:
+            recent_projects.remove(file_path)
+
+        # Удаляем самый старый элемент (если нужно)
+        if len(recent_projects) > 10:
+            del recent_projects[0]
+
+        # Добавить путь к файлу в конец списка
+        recent_projects.append(file_path)
+
+        # Сохраняем список
+        settings.setValue("recent_projects", recent_projects)
+
+    # TODO: реализовать def load(self, file_path, clear_thumbnails=True):
+
+    def load_default_project_settings(self):
+        """Загружает файл настроек проекта по умолчанию (выкидывает ошибку при сбое)"""
+        self._data = self.read_from_file(self.default_project_filepath)
+
+        self.current_filepath = None
+        self.has_unsaved_changes = False
+
+        # Генерируем ID проекта
+        self._data["id"] = self.generate_id()
+
+    @staticmethod
+    def generate_id(digits=10):
+        """Генерирует случайный ID"""
+        chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        id = ""
+        for i in range(digits):
+            c_index = random.randint(0, len(chars) - 1)
+            id += (chars[c_index])
+        return id
