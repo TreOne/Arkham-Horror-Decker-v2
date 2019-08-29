@@ -1,6 +1,5 @@
 import os
 import webbrowser
-
 from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication, QSizePolicy, QWidget, QToolButton
 from classes import ui_util, constants
@@ -103,8 +102,8 @@ class MainWindow(QMainWindow):
         """Автосохранение проекта"""
         # TODO: Доделать метод
         # Get current filepath (if any)
-        file_path = get_app().project.current_filepath
-        if get_app().project.needs_save():
+        file_path = app.project.current_filepath
+        if app.project.needs_save():
             log.info("auto_save_project")
 
             if file_path:
@@ -127,11 +126,11 @@ class MainWindow(QMainWindow):
                 # No saved project found
                 recovery_path = os.path.join(constants.BACKUP_PATH, "backup.osp")
                 log.info("Creating backup of project file: %s" % recovery_path)
-                get_app().project.save(recovery_path, move_temp_files=False, make_paths_relative=False)
+                app.project.save(recovery_path, move_temp_files=False, make_paths_relative=False)
 
                 # Clear the file_path (which is set by saving the project)
-                get_app().project.current_filepath = None
-                get_app().project.has_unsaved_changes = True
+                app.project.current_filepath = None
+                app.project.has_unsaved_changes = True
 
     def closeEvent(self, event):
         log.info('------------------ Выключение ------------------')

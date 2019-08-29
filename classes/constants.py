@@ -18,10 +18,11 @@ HOME_PATH = os.path.join(os.path.expanduser("~"))
 USER_PATH = os.path.join(HOME_PATH, f".{APP_NAME_WITHOUT_SPACES}")
 
 RESOURCES_PATH = os.path.join(PATH, "resources")
+IMAGES_PATH = os.path.join(USER_PATH, "images")
 BACKUP_PATH = os.path.join(USER_PATH, "backup")
 PROJECTS_PATH = os.path.join(USER_PATH, "projects")
 
 # Создаем пути, если они не существуют
-for folder in [USER_PATH, RESOURCES_PATH, BACKUP_PATH, PROJECTS_PATH]:
+for folder in [USER_PATH, RESOURCES_PATH, IMAGES_PATH, BACKUP_PATH, PROJECTS_PATH]:
     if not os.path.exists(folder.encode("UTF-8")):
         os.makedirs(folder, exist_ok=True)

@@ -74,7 +74,6 @@ class JsonDataStore:
     def convert_paths_to_relative(self, file_path, previous_path, data):
         """Преобразование всех путей в относительные (относительно пути file_path)"""
         try:
-            # Получить папку проекта
             path_context["new_project_folder"] = os.path.dirname(file_path)
             path_context["existing_project_folder"] = os.path.dirname(file_path)
             if previous_path:
@@ -108,7 +107,6 @@ class JsonDataStore:
     def convert_paths_to_absolute(self, file_path, data):
         """Преобразование всех путей в абсолютные с помощью регулярного выражения"""
         try:
-            # Получить папку проекта
             path_context["new_project_folder"] = os.path.dirname(file_path)
             path_context["existing_project_folder"] = os.path.dirname(file_path)
 
