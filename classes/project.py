@@ -3,11 +3,8 @@ import os
 import random
 import shutil
 from classes import constants
-from classes.app import get_settings
 from classes.json_data import JsonDataStore
 from classes.logger import log
-
-settings = get_settings()
 
 
 class ProjectDataStore(JsonDataStore):
@@ -15,7 +12,7 @@ class ProjectDataStore(JsonDataStore):
     def __init__(self):
         JsonDataStore.__init__(self)
         self.data_type = "данные проекта"  # Используется в сообщениях об ошибках
-        self.default_project_filepath = os.path.join(constants.DEFAULT_PROJECT_PATH, '_default.project')
+        self.default_project_filepath = os.path.join(constants.DEFAULT_PROJECT_PATH, '_project.json')
 
         # Путь по умолчанию
         self.current_file_path = None
@@ -39,7 +36,7 @@ class ProjectDataStore(JsonDataStore):
             self.move_temp_paths_to_project_folder(file_path)
 
         # Добавляем информацию о версии приложения
-        self._data["version"] = {constants.APP_NAME: constants.VERSION}
+        self._data["app_version"] = constants.VERSION
 
         # Пробуем сохранить файл настроек проекта (выкидывает ошибку при сбое)
         self.write_to_file(file_path, self._data, path_mode="relative", previous_path=self.current_file_path)
@@ -72,7 +69,9 @@ class ProjectDataStore(JsonDataStore):
         if not file_path or "backup.coa" in file_path:
             return  # Не добавлять резервную копию в список
 
-        recent_projects = settings.value("recent_projects")
+        from classes.app import get_settings
+        settings = get_settings()
+        recent_projects = settings.value("recent_projects", list())
 
         # Проверяем, что file_path является абсолютным
         file_path = os.path.abspath(file_path)
@@ -139,7 +138,7 @@ class ProjectDataStore(JsonDataStore):
 
     def upgrade_project_data_structures(self):
         """Устранение проблем с файлами проекта (если таковые имеются)"""
-        app_version = self._data["version"][constants.APP_NAME]
+        app_version = self._data["app_version"]
         log.info("Применяем исправления проекта версии %s" % app_version)
         # Исправить идентификатор проекта по умолчанию (если найден)
         if self._data.get("id") == "T0":

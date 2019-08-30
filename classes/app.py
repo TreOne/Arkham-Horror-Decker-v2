@@ -8,6 +8,8 @@ from PyQt5.QtGui import QFontDatabase, QFont, QPalette, QColor
 from PyQt5.QtWidgets import QApplication, QMessageBox, QStyleFactory
 from PyQt5.QtCore import QT_VERSION_STR, PYQT_VERSION_STR
 
+from classes import project
+
 try:
     # Включить High-DPI разрешение
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
@@ -92,6 +94,9 @@ class App(QApplication):
         # Инициализируемловца необработанных исключений
         from classes import exceptions
         sys.excepthook = exceptions.exception_handler
+
+        # Подключаем обьект для хранения данных текущего
+        self.project = project.ProjectDataStore()
 
         # Загрузить пользовательскую тему, если тема не задана ОС
         ui_util.load_theme()
