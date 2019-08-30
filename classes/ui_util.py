@@ -12,23 +12,6 @@ from classes.logger import log
 DEFAULT_THEME_NAME = "Material"
 
 
-def load_theme():
-    """Загружаем текущую тему ОС или тему по умолчанию"""
-    s = get_settings()
-
-    # Если тема не задана операционной системой
-    if QIcon.themeName() == '' and not s.value("theme") == "No Theme":
-
-        # Известная ошибка, когда Ubuntu не сообщает имя темы,
-        # используем тему ubuntu по умолчанию
-        if os.getenv('DESKTOP_SESSION') == 'ubuntu':
-            QIcon.setThemeName('unity-icon-theme')
-
-        # Используем тему из пакета на Windows и Mac
-        else:
-            QIcon.setThemeName(DEFAULT_THEME_NAME)
-
-
 def load_ui(window, ui_name):
     """Загружаем *.ui файл, а также XML версию файла"""
     # Пытаемся загрузить UI файл 5 раз

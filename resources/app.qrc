@@ -1,10 +1,13 @@
 <RCC>
   <qresource prefix="/icons">
+    <file>Material/actions/file-plus-outline.svg</file>
+    <file>Material/actions/content-save-outline.svg</file>
     <file>Material/actions/new-box.svg</file>
     <file>Material/actions/dock-right.svg</file>
     <file>Material/actions/power.svg</file>
     <file>Material/actions/information-outline.svg</file>
     <file>Material/actions/database-refresh.svg</file>
+    <file>Material/actions/folder-open-outline.svg</file>
   </qresource>
   <qresource prefix="/">
     <file>images/app.svg</file>

@@ -42,7 +42,7 @@ class JsonDataStore:
     def read_from_file(self, file_path, path_mode="ignore"):
         """Загрузить данные из JSON файла"""
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, 'r', encoding='utf8') as f:
                 contents = f.read()
                 if contents:
                     if path_mode == "absolute":

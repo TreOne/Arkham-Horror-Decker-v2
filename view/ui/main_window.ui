@@ -60,6 +60,12 @@
     <property name="title">
      <string>&amp;Файл</string>
     </property>
+    <addaction name="action_new"/>
+    <addaction name="action_open"/>
+    <addaction name="separator"/>
+    <addaction name="action_save"/>
+    <addaction name="action_save_as"/>
+    <addaction name="separator"/>
     <addaction name="action_quit"/>
    </widget>
    <widget class="QMenu" name="menu_help">
@@ -82,6 +88,10 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_new"/>
+   <addaction name="action_open"/>
+   <addaction name="action_save"/>
+   <addaction name="separator"/>
    <addaction name="action_update_db"/>
   </widget>
   <widget class="QStatusBar" name="statubar"/>
@@ -165,6 +175,54 @@
    </property>
    <property name="visible">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="action_new">
+   <property name="icon">
+    <iconset theme="file-plus-outline" resource="../../resources/app.qrc">
+     <normaloff>:/icons/Material/actions/file-plus-outline.svg</normaloff>:/icons/Material/actions/file-plus-outline.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Созд&amp;ать</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="action_open">
+   <property name="icon">
+    <iconset resource="../../resources/app.qrc">
+     <normaloff>:/icons/Material/actions/folder-open-outline.svg</normaloff>:/icons/Material/actions/folder-open-outline.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Открыть...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_save">
+   <property name="icon">
+    <iconset theme="content-save-outline" resource="../../resources/app.qrc">
+     <normaloff>:/icons/Material/actions/content-save-outline.svg</normaloff>:/icons/Material/actions/content-save-outline.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Сохранить</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_save_as">
+   <property name="icon">
+    <iconset theme="content-save-outline" resource="../../resources/app.qrc">
+     <normaloff>:/icons/Material/actions/content-save-outline.svg</normaloff>:/icons/Material/actions/content-save-outline.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Сохранить &amp;как...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>

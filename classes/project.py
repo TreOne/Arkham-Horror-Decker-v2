@@ -15,7 +15,7 @@ class ProjectDataStore(JsonDataStore):
         self.default_project_filepath = os.path.join(constants.DEFAULT_PROJECT_PATH, '_project.json')
 
         # Путь по умолчанию
-        self.current_file_path = None
+        self.current_filepath = None
 
         # Отслеживание изменений в проекте
         self.has_unsaved_changes = False
@@ -39,8 +39,8 @@ class ProjectDataStore(JsonDataStore):
         self._data["app_version"] = constants.VERSION
 
         # Пробуем сохранить файл настроек проекта (выкидывает ошибку при сбое)
-        self.write_to_file(file_path, self._data, path_mode="relative", previous_path=self.current_file_path)
-        self.current_file_path = file_path
+        self.write_to_file(file_path, self._data, path_mode="relative", previous_path=self.current_filepath)
+        self.current_filepath = file_path
 
         # Добавляем в "Последние файлы"
         self.add_to_recent_files(file_path)
@@ -66,7 +66,7 @@ class ProjectDataStore(JsonDataStore):
 
     def add_to_recent_files(self, file_path):
         """Добавить проект в список 'Последние файлы'"""
-        if not file_path or "backup.coa" in file_path:
+        if not file_path or "backup"+constants.APP_EXT in file_path:
             return  # Не добавлять резервную копию в список
 
         from classes.app import get_settings
@@ -109,11 +109,11 @@ class ProjectDataStore(JsonDataStore):
             # Объединить параметры по умолчанию и параметры проекта
             self._data = self.merge_settings(default_project, project_data)
 
-            self.current_file_path = file_path
+            self.current_filepath = file_path
             self.has_unsaved_changes = False
 
             # Копируем все изображения проекта в рабочую папку изображений
-            loaded_project_folder = os.path.dirname(self.current_file_path)
+            loaded_project_folder = os.path.dirname(self.current_filepath)
             project_images_folder = os.path.join(loaded_project_folder, "images")
             if os.path.exists(project_images_folder) and clear_images:
                 # Удаляем удаляем каталог с изображениями
@@ -131,7 +131,7 @@ class ProjectDataStore(JsonDataStore):
     def load_default_project_settings(self):
         """Загружает файл настроек проекта по умолчанию (выкидывает ошибку при сбое)"""
         self._data = self.read_from_file(self.default_project_filepath)
-        self.current_file_path = None
+        self.current_filepath = None
         self.has_unsaved_changes = False
         # Генерируем ID проекта
         self._data["id"] = self.generate_id()

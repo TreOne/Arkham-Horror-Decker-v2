@@ -74,6 +74,24 @@ class MainWindow(QMainWindow):
             update_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
             self.toolbar.addWidget(update_button)
 
+    def action_save_trigger(self, event):
+        # Использовать current_filepath, если имеется, в противном случае спросить пользователя
+        file_path = app.project.current_filepath
+        if not file_path:
+            recommended_filename = app.project.get("title") + constants.APP_EXT
+            recommended_path = os.path.join(constants.HOME_PATH, recommended_filename)
+            file_path, file_type = QFileDialog.getSaveFileName(self, "Сохранить проект...",
+                                                               recommended_path,
+                                                               "{} (*{})".format(constants.APP_NAME, constants.APP_EXT))
+
+        if file_path:
+            # Добавляем расширение файла если надо
+            if file_path.endswith(constants.APP_EXT):
+                file_path = file_path + constants.APP_EXT
+
+            # Сохраняем проект
+            self.save_project(file_path)
+
     def action_update_app_trigger(self, event):
         download_url = constants.APP_SITE + "/download"
         try:
@@ -195,14 +213,16 @@ class MainWindow(QMainWindow):
         return True
 
     def set_current_file(self, file_name):
-        self.current_file = file_name
-        self.setWindowModified(False)
+        app.project.current_filepath = file_name
 
-        if self.current_file:
-            shown_name = self.stripped_name(self.current_file)
+        need_save = app.project.needs_save()
+        self.setWindowModified(need_save)
+        # TODO: Раскоментить после тестирования сохранений
+        # self.action_save.setEnabled(need_save)
+        self.action_save_as.setEnabled(need_save)
+
+        if app.project.current_filepath:
+            shown_name = QFileInfo(app.project.current_filepath).fileName()
         else:
-            shown_name = 'untitled.txt'
+            shown_name = "Новый проект"
         self.setWindowTitle("%s[*]" % shown_name)
-
-    def stripped_name(self, full_file_name):
-        return QFileInfo(full_file_name).fileName()
