@@ -67,7 +67,7 @@ class JsonDataStore:
             with open(file_path, 'w') as f:
                 f.write(contents)
         except Exception as ex:
-            msg = ("Не удается сохранить {} в файл:\n{}\n{}".format(self.data_type, file_path, ex))
+            msg = "Не удается сохранить {} в файл:\n{}\n{}".format(self.data_type, file_path, ex)
             log.error(msg)
             raise Exception(msg)
 

@@ -17,9 +17,11 @@ class StreamToLogger(object):
             self.logger.log(self.log_level, line.rstrip())
 
     def flush(self):
+        """flush()"""
         pass
 
     def errors(self):
+        """errors()"""
         pass
 
 

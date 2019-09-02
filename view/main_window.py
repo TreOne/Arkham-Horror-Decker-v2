@@ -1,7 +1,9 @@
 import os
+import shutil
 import webbrowser
-from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer, QTranslator
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication, QSizePolicy, QWidget, QToolButton
+from PyQt5.QtCore import Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer, QTranslator
+from PyQt5.QtGui import QCursor, QIcon
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QSizePolicy, QWidget, QToolButton
 from classes import ui_util, constants
 from classes.app import get_app, get_settings
 from classes.logger import log
@@ -16,6 +18,8 @@ class MainWindow(QMainWindow):
     """Главное окно"""
 
     found_version_signal = pyqtSignal(str)
+    open_project_signal = pyqtSignal(str)
+    recover_backup_signal = pyqtSignal()
 
     def __init__(self):
         QMainWindow.__init__(self)
@@ -32,12 +36,16 @@ class MainWindow(QMainWindow):
         # Устанавливаем главное окно для ссылки на него во время инициализации потомков
         app.window = self
 
+        self.recent_menu = None
+
         ui_util.load_ui(self, 'main_window')
         ui_util.init_ui(self)
 
         # Получить данные о текущей версии приложения через HTTP
         self.found_version_signal.connect(self.found_current_version)
         get_current_version()
+
+        self.recover_backup_signal.connect(self.recover_backup)
 
         self.not_fullscreen_window_state = Qt.WindowNoState
         self.restore_window_settings()
@@ -85,9 +93,8 @@ class MainWindow(QMainWindow):
         # Предложить пользователю сохранить проект (при необходимости)
         if app.project.needs_save():
             log.info("Предлагаем пользователю сохранить проект перед закрытием окна")
-            shown_name = QFileInfo(app.project.current_filepath).fileName()
             ret = QMessageBox.question(self, "Сохранить проект?",
-                                       'Сохранить изменения в файле "{}" перед закрытием?'.format(shown_name),
+                                       'Сохранить изменения в проекте "{}" перед закрытием?'.format(app.project.get("title")),
                                        QMessageBox.Cancel | QMessageBox.No | QMessageBox.Yes)
             if ret == QMessageBox.Yes:
                 # Сохраняем проект
@@ -104,9 +111,141 @@ class MainWindow(QMainWindow):
                 log.info("Пользователь отказался сохранять проект")
 
         log.info("------------------ Выключение ------------------")
-        app.processEvents()
         self.save_window_settings()
+        app.processEvents()
         event.accept()
+
+    def recover_backup(self):
+        """Восстановление файла резервной копии (если есть)"""
+        log.info("Проверка наличия резервной копии проекта")
+        # Проверяем существование файла backup
+        recovery_path = os.path.join(constants.BACKUP_PATH, "backup.json")
+
+        if os.path.exists(recovery_path):
+            log.info("Восстанавливаем проект из резервной копии: %s" % recovery_path)
+            self.open_project(recovery_path, clear_images=False)
+
+            # Очистите путь к файлу (который устанавливается при сохранения проекта)
+            app.project.has_unsaved_changes = True
+            self.set_current_file(None)
+
+            # Отображаем сообщение для пользователя
+            QMessageBox.information(self, "Резервная копия восстановлена", "Ваш последний проект был восстановлен.")
+
+        else:
+            # Резервных копий не найдено
+            # Загружаем пустой проект (для установки настроек по умолчанию)
+            app.project.load("")
+            self.set_current_file(None)
+
+    def open_project(self, file_path, clear_images=True):
+        """Открывает проект из file_path"""
+        # Сначала проверяем путь к файлу (возможно, пользователь отменил выбор пути)
+        if not file_path:
+            return
+
+        # У нас есть несохраненные изменения?
+        if app.project.needs_save():
+            ret = QMessageBox.question(self, "Сохранить проект?",
+                                       "Сохранить изменения в проекте, перед открытием нового?",
+                                       QMessageBox.Cancel | QMessageBox.No | QMessageBox.Yes)
+            if ret == QMessageBox.Yes:
+                self.action_save.trigger()
+            elif ret == QMessageBox.Cancel:
+                return
+
+        # Устанавливаем курсор в режим ожидания
+        app.setOverrideCursor(QCursor(Qt.WaitCursor))
+
+        try:
+            if os.path.exists(file_path):
+                if clear_images:
+                    self.clear_all_images()
+
+                app.project.load(file_path, clear_images)
+                self.set_current_file(file_path)
+
+                # Загружаем последние проекты
+                self.load_recent_menu()
+
+                log.info("Загружен проект {}".format(file_path))
+            else:
+                log.info("Проект не обнаружен {}".format(file_path))
+                self.statusBar().showMessage("Проект {} отсутствует (возможно, он был перемещен или удален).".format(file_path), 5000)
+                self.remove_recent_project(file_path)
+                self.load_recent_menu()
+
+        except Exception as ex:
+            log.error("Ошибка при открытии проекта {}".format(file_path))
+            QMessageBox.warning(self, "Ошибка при открытии проекта!", str(ex))
+
+        # Востанавливаем вид курсора
+        app.restoreOverrideCursor()
+
+    def action_new_trigger(self, event):
+        # У нас есть несохраненные изменения?
+        if app.project.needs_save():
+            ret = QMessageBox.question(self, "Сохранить проект?",
+                                       "Сохранить изменения в проекте, перед открытием нового?",
+                                       QMessageBox.Cancel | QMessageBox.No | QMessageBox.Yes)
+            if ret == QMessageBox.Yes:
+                self.action_save.trigger()
+            elif ret == QMessageBox.Cancel:
+                return
+
+        self.clear_all_images()
+
+        # Очистить данные
+        app.project.load("")
+        self.set_current_file(None)
+
+        log.info("Создан новый проект")
+
+    def clear_all_images(self):
+        """Удалить все изображения"""
+        try:
+            if os.path.exists(constants.IMAGES_PATH):
+                log.info("Удаляем все изображения из %s" % constants.IMAGES_PATH)
+                shutil.rmtree(constants.IMAGES_PATH, True)
+                os.mkdir(constants.IMAGES_PATH)
+
+            backup_path = os.path.join(constants.BACKUP_PATH, "backup.json")
+            if os.path.exists(backup_path):
+                log.info("Удаляем файлы сохранений: %s" % backup_path)
+                os.unlink(backup_path)
+        except:
+            log.info("Ошибка при очистке папки с изображениями: %s" % constants.IMAGES_PATH)
+
+    def load_recent_menu(self):
+        """Очищает и загрузить список последних проектов"""
+        # Получаем список последних проектов
+        recent_projects = settings.value("recent_projects")
+
+        # Добавить меню последние проекты (после "Открыть")
+        import functools
+        if not self.recent_menu:
+            # Создаем меню "Последние проекты"
+            self.recent_menu = self.menu_file.addMenu(QIcon.fromTheme("file-restore-outline"), "Последние проекты")
+            self.menu_file.insertMenu(self.action_recent_placeholder, self.recent_menu)
+        else:
+            # Очищаем содержимое
+            self.recent_menu.clear()
+
+        # Наполняем меню последними проектами
+        for file_path in reversed(recent_projects):
+            new_action = self.recent_menu.addAction(file_path)
+            new_action.triggered.connect(functools.partial(self.recent_project_clicked, file_path))
+
+    def remove_recent_project(self, file_path):
+        """Удаляет проект из меню "Последние проекты", если приложение не может его найти"""
+        recent_projects = settings.value("recent_projects")
+        if file_path in recent_projects:
+            recent_projects.remove(file_path)
+        settings.setValue("recent_projects", recent_projects)
+
+    def recent_project_clicked(self, file_path):
+        """Загрузка проекта из меню 'Последние проекты'"""
+        self.open_project_signal.emit(file_path)
 
     def auto_save_project(self):
         """Автосохранение проекта"""
@@ -146,16 +285,16 @@ class MainWindow(QMainWindow):
         # Использовать current_filepath, если имеется, в противном случае спросить пользователя
         file_path = app.project.current_filepath
         if not file_path:
-            recommended_filename = app.project.get("title") + constants.APP_EXT
+            recommended_filename = app.project.get("title") + ".json"
             recommended_path = os.path.join(constants.HOME_PATH, recommended_filename)
             file_path, file_type = QFileDialog.getSaveFileName(self, "Сохранить проект...",
                                                                recommended_path,
-                                                               "{} (*{})".format(constants.APP_NAME, constants.APP_EXT))
+                                                               "{} (*.json)".format(constants.APP_NAME))
 
         if file_path:
             # Добавляем расширение файла если надо
-            if not file_path.endswith(constants.APP_EXT):
-                file_path = file_path + constants.APP_EXT
+            if not file_path.endswith(".json"):
+                file_path = file_path + ".json"
 
             # Сохраняем проект
             self.save_project(file_path)
@@ -170,8 +309,7 @@ class MainWindow(QMainWindow):
             self.set_current_file(file_path)
 
             # Обновляем список последних проектов
-            # TODO: раскоментить когда доделается система загрузки последних проектов
-            # self.load_recent_menu()
+            self.load_recent_menu()
 
             log.info("Проект сохранен {}".format(file_path))
             self.statusBar().showMessage("Файл сохранен", 2000)
@@ -191,7 +329,7 @@ class MainWindow(QMainWindow):
         if app.project.current_filepath:
             shown_name = QFileInfo(app.project.current_filepath).fileName()
         else:
-            shown_name = "Новый проект"
+            shown_name = app.project.get("title")
         self.setWindowTitle("%s[*]" % shown_name)
 
     def action_update_app_trigger(self, event):

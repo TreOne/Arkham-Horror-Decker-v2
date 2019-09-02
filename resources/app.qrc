@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/icons">
+    <file>Material/actions/file-restore-outline.svg</file>
     <file>Material/actions/file-plus-outline.svg</file>
     <file>Material/actions/content-save-outline.svg</file>
     <file>Material/actions/new-box.svg</file>

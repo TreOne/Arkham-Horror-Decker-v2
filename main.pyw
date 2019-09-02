@@ -1,10 +1,11 @@
 import sys
 
-
 try:
     from classes import constants
     print("Загрузка модулей из текущего каталога: %s" % constants.PATH)
 except ImportError:
+    # TODO: Реализовать функцию
+    # sys.path.append(installer.INSTALL_PATH)
     from classes import constants
     print("Загрузка модулей из каталога установки: %s" % constants.PATH)
 

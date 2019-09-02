@@ -3,7 +3,7 @@ import sys
 import locale
 import platform
 import traceback
-from PyQt5.QtCore import QTranslator, QSettings, pyqtSlot, Qt, QLocale
+from PyQt5.QtCore import QSettings, pyqtSlot, Qt
 from PyQt5.QtGui import QFontDatabase, QFont
 from PyQt5.QtWidgets import QApplication, QMessageBox, QStyleFactory
 from PyQt5.QtCore import QT_VERSION_STR, PYQT_VERSION_STR
@@ -33,7 +33,6 @@ class App(QApplication):
 
     def __init__(self, *args):
         QApplication.__init__(self, *args)
-
         try:
             # Импорт модулей
             from classes import constants
@@ -124,20 +123,13 @@ class App(QApplication):
         except Exception as ex:
             log.error("Ошибка установки шрифта medieval.ttf: %s" % str(ex))
 
-        # Руссифицируем QT диалоги
-        from resources import app_rc
-        app_rc.qInitResources()
-        ru_qtbase_path = os.path.join(constants.RESOURCES_PATH, "qtbase_ru.qm")
-        log.info("Установка руссификации интерфейса QT из %s" % ru_qtbase_path)
-        translator = QTranslator(self)
-        if translator.load(QLocale(), "qtbase", "_", ":/"):
-            self.installTranslator(translator)
-        else:
-            log.error("Ошибка при установке руссификации интерфейса QT.")
-
         # Создаем главное окно приложения
         from view.main_window import MainWindow
         MainWindow()
+
+        # Восстановить файл из резервной копии
+        # (это не может произойти до тех пор, пока главное окно не будет полностью загружено)
+        self.window.recover_backup_signal.emit()
 
         log.info("------------------------------------------------")
         log.info("Инициализация приложения завершена".center(48))
@@ -162,5 +154,5 @@ class App(QApplication):
 
     def run(self):
         """Запуск основного потока QT приложения"""
-        res = self.exec_()
+        res = self.exec()
         return res

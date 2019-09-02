@@ -25,9 +25,7 @@ class ProjectDataStore(JsonDataStore):
 
     def needs_save(self):
         """Возвращает информацию о необходимости сохранения проекта"""
-        # TODO: Убрать после завершения тестирования системы сохранений
-        return True
-        # return self.has_unsaved_changes
+        return self.has_unsaved_changes
 
     def save(self, file_path, move_temp_files=True):
         """Сохранить проект на диск"""
@@ -68,7 +66,7 @@ class ProjectDataStore(JsonDataStore):
 
     def add_to_recent_files(self, file_path):
         """Добавить проект в список 'Последние файлы'"""
-        if not file_path or "backup"+constants.APP_EXT in file_path:
+        if not file_path or "backup.json" in file_path:
             return  # Не добавлять резервную копию в список
 
         from classes.app import get_settings
