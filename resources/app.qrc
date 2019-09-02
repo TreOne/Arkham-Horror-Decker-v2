@@ -11,6 +11,7 @@
   </qresource>
   <qresource prefix="/">
     <file>images/app.svg</file>
+    <file>i18n/qtbase_ru.qm</file>
     <file>images/about_logo.png</file>
   </qresource>
 </RCC>

@@ -1,6 +1,6 @@
 import os
 import webbrowser
-from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer
+from PyQt5.QtCore import QFile, QTextStream, Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer, QTranslator
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QApplication, QSizePolicy, QWidget, QToolButton
 from classes import ui_util, constants
 from classes.app import get_app, get_settings
@@ -20,8 +20,14 @@ class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         app_rc.qInitResources()
-        self.current_file = ''
-        self.recent_menu = None
+
+        # Руссифицируем QT диалоги
+        log.info("Установка руссификации интерфейса QT")
+        qt_base_translator = QTranslator(app)
+        if qt_base_translator.load(":/i18n/qtbase_ru.qm"):
+            app.installTranslator(qt_base_translator)
+        else:
+            log.error("Ошибка при установке руссификации интерфейса QT.")
 
         # Устанавливаем главное окно для ссылки на него во время инициализации потомков
         app.window = self
@@ -66,7 +72,8 @@ class MainWindow(QMainWindow):
             # Установить текст для QAction
             self.action_update_app.setVisible(True)
             self.action_update_app.setText("Доступно обновление")
-            self.action_update_app.setToolTip("Доступно обновление: <b>%s</b>" % new_version)
+            self.action_update_app.setToolTip("Ваша версия: <b>{}</b><br>"
+                                              "Доступна: <b>{}</b>".format(constants.VERSION, new_version))
 
             # Добавить кнопку Обновление доступно (с иконкой и текстом)
             update_button = QToolButton()
@@ -74,47 +81,32 @@ class MainWindow(QMainWindow):
             update_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
             self.toolbar.addWidget(update_button)
 
-    def action_save_trigger(self, event):
-        # Использовать current_filepath, если имеется, в противном случае спросить пользователя
-        file_path = app.project.current_filepath
-        if not file_path:
-            recommended_filename = app.project.get("title") + constants.APP_EXT
-            recommended_path = os.path.join(constants.HOME_PATH, recommended_filename)
-            file_path, file_type = QFileDialog.getSaveFileName(self, "Сохранить проект...",
-                                                               recommended_path,
-                                                               "{} (*{})".format(constants.APP_NAME, constants.APP_EXT))
+    def closeEvent(self, event):
+        # Предложить пользователю сохранить проект (при необходимости)
+        if app.project.needs_save():
+            log.info("Предлагаем пользователю сохранить проект перед закрытием окна")
+            shown_name = QFileInfo(app.project.current_filepath).fileName()
+            ret = QMessageBox.question(self, "Сохранить проект?",
+                                       'Сохранить изменения в файле "{}" перед закрытием?'.format(shown_name),
+                                       QMessageBox.Cancel | QMessageBox.No | QMessageBox.Yes)
+            if ret == QMessageBox.Yes:
+                # Сохраняем проект
+                self.action_save_trigger(event)
+                if app.project.needs_save():
+                    log.info("Процесс сохранения был отменен. Не закрываем окно приложения!")
+                    event.ignore()
+                    return
+            elif ret == QMessageBox.Cancel:
+                log.info("Пользователь отменил закрытие окна")
+                event.ignore()
+                return
+            elif ret == QMessageBox.No:
+                log.info("Пользователь отказался сохранять проект")
 
-        if file_path:
-            # Добавляем расширение файла если надо
-            if file_path.endswith(constants.APP_EXT):
-                file_path = file_path + constants.APP_EXT
-
-            # Сохраняем проект
-            self.save_project(file_path)
-
-    def action_update_app_trigger(self, event):
-        download_url = constants.APP_SITE + "/download"
-        try:
-            webbrowser.open(download_url)
-            log.info("Успешно открыта страница скачивания новой версии")
-        except:
-            QMessageBox.warning(self, "Ошибка!", "Не удается открыть страницу загрузки обновления!<br>"
-                                                 "Попробуйте сделать это вручную:<br>"
-                                                 "<a href='{url}'>{url}</a>" .format(url=download_url))
-
-    def restore_window_settings(self):
-        """Загрузка настроек размера и положения окна"""
-        self.restoreGeometry(app.settings.value("Geometry", QByteArray()))
-        self.restoreState(app.settings.value("Window State", QByteArray()))
-
-        # Устанавливаем флаги в меню в соответствии с состояниями элементов
-        self.action_view_toolbar.setChecked(self.toolbar.isVisibleTo(self))
-        self.action_fullscreen.setChecked(self.isFullScreen())
-
-    def save_window_settings(self):
-        """Сохранение настроек размера и положения окна"""
-        app.settings.setValue("Geometry", self.saveGeometry())
-        app.settings.setValue("Window State", self.saveState())
+        log.info("------------------ Выключение ------------------")
+        app.processEvents()
+        self.save_window_settings()
+        event.accept()
 
     def auto_save_project(self):
         """Автосохранение проекта"""
@@ -150,13 +142,83 @@ class MainWindow(QMainWindow):
                 app.project.current_filepath = None
                 app.project.has_unsaved_changes = True
 
-    def closeEvent(self, event):
-        log.info('------------------ Выключение ------------------')
-        if self.maybe_save():
-            self.save_window_settings()
-            event.accept()
+    def action_save_trigger(self, event):
+        # Использовать current_filepath, если имеется, в противном случае спросить пользователя
+        file_path = app.project.current_filepath
+        if not file_path:
+            recommended_filename = app.project.get("title") + constants.APP_EXT
+            recommended_path = os.path.join(constants.HOME_PATH, recommended_filename)
+            file_path, file_type = QFileDialog.getSaveFileName(self, "Сохранить проект...",
+                                                               recommended_path,
+                                                               "{} (*{})".format(constants.APP_NAME, constants.APP_EXT))
+
+        if file_path:
+            # Добавляем расширение файла если надо
+            if not file_path.endswith(constants.APP_EXT):
+                file_path = file_path + constants.APP_EXT
+
+            # Сохраняем проект
+            self.save_project(file_path)
+
+    def save_project(self, file_path):
+        """Сохраняет проект по указанному пути"""
+        try:
+            # Сохраняем проект по указанному пути
+            app.project.save(file_path)
+
+            # Обновить заголовок окна и состояние кнопок созхранения
+            self.set_current_file(file_path)
+
+            # Обновляем список последних проектов
+            # TODO: раскоментить когда доделается система загрузки последних проектов
+            # self.load_recent_menu()
+
+            log.info("Проект сохранен {}".format(file_path))
+            self.statusBar().showMessage("Файл сохранен", 2000)
+
+        except Exception as ex:
+            log.error("Не удалось сохранить проект %s. %s" % (file_path, str(ex)))
+            QMessageBox.warning(self, "Ошибка при сохранении проекта", str(ex))
+
+    def set_current_file(self, file_path):
+        app.project.current_filepath = file_path
+
+        need_save = app.project.needs_save()
+        self.setWindowModified(need_save)
+        self.action_save.setEnabled(need_save)
+        self.action_save_as.setEnabled(need_save)
+
+        if app.project.current_filepath:
+            shown_name = QFileInfo(app.project.current_filepath).fileName()
         else:
-            event.ignore()
+            shown_name = "Новый проект"
+        self.setWindowTitle("%s[*]" % shown_name)
+
+    def action_update_app_trigger(self, event):
+        download_url = constants.APP_SITE + "/download"
+        try:
+            webbrowser.open(download_url)
+            log.info("Успешно открыта страница скачивания новой версии")
+        except:
+            QMessageBox.warning(self, "Ошибка!", "Не удается открыть страницу загрузки обновления!<br>"
+                                                 "Попробуйте сделать это вручную:<br>"
+                                                 "<a href='{url}'>{url}</a>".format(url=download_url))
+
+    def restore_window_settings(self):
+        """Загрузка настроек размера и положения окна"""
+        log.info("Загружаем настройки главного окна")
+        self.restoreGeometry(app.settings.value("Geometry", QByteArray()))
+        self.restoreState(app.settings.value("Window State", QByteArray()))
+
+        # Устанавливаем флаги в меню в соответствии с состояниями элементов
+        self.action_view_toolbar.setChecked(self.toolbar.isVisibleTo(self))
+        self.action_fullscreen.setChecked(self.isFullScreen())
+
+    def save_window_settings(self):
+        """Сохранение настроек размера и положения окна"""
+        log.info("Сохраняем настройки главного окна")
+        app.settings.setValue("Geometry", self.saveGeometry())
+        app.settings.setValue("Window State", self.saveState())
 
     def action_fullscreen_trigger(self, event):
         """Переключить режим полного экрана"""
@@ -172,57 +234,3 @@ class MainWindow(QMainWindow):
         from view.about import About
         win = About()
         win.exec_()
-
-    def maybe_save(self):
-        is_modified = False
-        if is_modified:
-            ret = QMessageBox.warning(self, constants.APP_NAME, "У вас остались несохраненные изменения.\n"
-                                                                "Хотите ли вы сохранить измененния?",
-                                      QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
-            if ret == QMessageBox.Save:
-                return self.save()
-            if ret == QMessageBox.Cancel:
-                return False
-        return True
-
-    def save(self):
-        if self.current_file:
-            return self.save_file(self.current_file)
-        return self.save_as()
-
-    def save_as(self):
-        file_name, _ = QFileDialog.getSaveFileName(self)
-        if file_name:
-            return self.save_file(file_name)
-        return False
-
-    def save_file(self, file_name):
-        file = QFile(file_name)
-        if not file.open(QFile.WriteOnly | QFile.Text):
-            QMessageBox.warning(self, constants.APP_NAME,
-                                "Запись в файл невозможна %s:\n%s." % (file_name, file.errorString()))
-            return False
-
-        out_file = QTextStream(file)
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        out_file << self.textEdit.toPlainText()
-        QApplication.restoreOverrideCursor()
-
-        self.set_current_file(file_name)
-        self.statusBar().showMessage("Файл сохранен", 2000)
-        return True
-
-    def set_current_file(self, file_name):
-        app.project.current_filepath = file_name
-
-        need_save = app.project.needs_save()
-        self.setWindowModified(need_save)
-        # TODO: Раскоментить после тестирования сохранений
-        # self.action_save.setEnabled(need_save)
-        self.action_save_as.setEnabled(need_save)
-
-        if app.project.current_filepath:
-            shown_name = QFileInfo(app.project.current_filepath).fileName()
-        else:
-            shown_name = "Новый проект"
-        self.setWindowTitle("%s[*]" % shown_name)

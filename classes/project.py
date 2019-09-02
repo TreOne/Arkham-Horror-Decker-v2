@@ -25,7 +25,9 @@ class ProjectDataStore(JsonDataStore):
 
     def needs_save(self):
         """Возвращает информацию о необходимости сохранения проекта"""
-        return self.has_unsaved_changes
+        # TODO: Убрать после завершения тестирования системы сохранений
+        return True
+        # return self.has_unsaved_changes
 
     def save(self, file_path, move_temp_files=True):
         """Сохранить проект на диск"""
