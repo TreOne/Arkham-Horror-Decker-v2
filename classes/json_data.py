@@ -57,11 +57,11 @@ class JsonDataStore:
         log.warning(msg)
         raise Exception(msg)
 
-    def write_to_file(self, file_path, data, path_mode="ignore", previous_path=None):
+    def write_to_file(self, file_path, data, make_paths_relative=False, previous_path=None):
         """Сохранить данные в JSON файл"""
         try:
             contents = json.dumps(data, indent=4)
-            if path_mode == "relative":
+            if make_paths_relative:
                 # Преобразование всех путей в относительные
                 contents = self.convert_paths_to_relative(file_path, previous_path, contents)
             with open(file_path, 'w') as f:

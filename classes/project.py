@@ -27,7 +27,7 @@ class ProjectDataStore(JsonDataStore):
         """Возвращает информацию о необходимости сохранения проекта"""
         return self.has_unsaved_changes
 
-    def save(self, file_path, move_temp_files=True):
+    def save(self, file_path, move_temp_files=True, make_paths_relative=True):
         """Сохранить проект на диск"""
         log.info("Сохранение проекта: {}".format(file_path))
 
@@ -39,7 +39,7 @@ class ProjectDataStore(JsonDataStore):
         self._data["app_version"] = constants.VERSION
 
         # Пробуем сохранить файл настроек проекта (выкидывает ошибку при сбое)
-        self.write_to_file(file_path, self._data, path_mode="relative", previous_path=self.current_filepath)
+        self.write_to_file(file_path, self._data, make_paths_relative=make_paths_relative, previous_path=self.current_filepath)
         self.current_filepath = file_path
 
         # Добавляем в "Последние файлы"
