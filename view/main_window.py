@@ -62,7 +62,10 @@ class MainWindow(QMainWindow):
         if settings.value("enable-auto-save", True):
             self.auto_save_timer.start()
 
-        self.set_current_file('')
+        # Подключаем сигнал open_project_signal
+        self.open_project_signal.connect(self.open_project)
+
+        # self.set_current_file('')
         self.show()
 
     @pyqtSlot(str)
@@ -92,19 +95,18 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         # Предложить пользователю сохранить проект (при необходимости)
         if app.project.needs_save():
-            log.info("Предлагаем пользователю сохранить проект перед закрытием окна")
+            log.info("Предлагаем пользователю сохранить проект перед закрытием приложения")
             ret = QMessageBox.question(self, "Сохранить проект?",
-                                       'Сохранить изменения в проекте "{}" перед закрытием?'.format(app.project.get("title")),
+                                       'Сохранить изменения в проекте "{}"?'.format(app.project.get("title")),
                                        QMessageBox.Cancel | QMessageBox.No | QMessageBox.Yes)
             if ret == QMessageBox.Yes:
-                # Сохраняем проект
                 self.action_save_trigger(event)
                 if app.project.needs_save():
                     log.info("Процесс сохранения был отменен. Не закрываем окно приложения!")
                     event.ignore()
                     return
             elif ret == QMessageBox.Cancel:
-                log.info("Пользователь отменил закрытие окна")
+                log.info("Пользователь отменил закрытие приложения")
                 event.ignore()
                 return
             elif ret == QMessageBox.No:
@@ -146,13 +148,20 @@ class MainWindow(QMainWindow):
 
         # У нас есть несохраненные изменения?
         if app.project.needs_save():
+            log.info("Предлагаем пользователю сохранить проект перед открытием нового проекта")
             ret = QMessageBox.question(self, "Сохранить проект?",
-                                       "Сохранить изменения в проекте, перед открытием нового?",
+                                       'Сохранить изменения в проекте "{}"?'.format(app.project.get("title")),
                                        QMessageBox.Cancel | QMessageBox.No | QMessageBox.Yes)
             if ret == QMessageBox.Yes:
                 self.action_save.trigger()
+                if app.project.needs_save():
+                    log.info("Процесс сохранения был отменен. Не продолжаем действие!")
+                    return
             elif ret == QMessageBox.Cancel:
+                log.info("Пользователь отменил создание нового проекта")
                 return
+            elif ret == QMessageBox.No:
+                log.info("Пользователь отказался сохранять проект")
 
         # Устанавливаем курсор в режим ожидания
         app.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -171,7 +180,8 @@ class MainWindow(QMainWindow):
                 log.info("Загружен проект {}".format(file_path))
             else:
                 log.info("Проект не обнаружен {}".format(file_path))
-                self.statusBar().showMessage("Проект {} отсутствует (возможно, он был перемещен или удален).".format(file_path), 5000)
+                self.statusBar().showMessage("Проект {} отсутствует "
+                                             "(возможно, он был перемещен или удален).".format(file_path), 5000)
                 self.remove_recent_project(file_path)
                 self.load_recent_menu()
 
@@ -185,13 +195,20 @@ class MainWindow(QMainWindow):
     def action_new_trigger(self, event):
         # У нас есть несохраненные изменения?
         if app.project.needs_save():
+            log.info("Предлагаем пользователю сохранить проект перед созданием нового проекта.")
             ret = QMessageBox.question(self, "Сохранить проект?",
-                                       "Сохранить изменения в проекте, перед открытием нового?",
+                                       'Сохранить изменения в проекте "{}"?'.format(app.project.get("title")),
                                        QMessageBox.Cancel | QMessageBox.No | QMessageBox.Yes)
             if ret == QMessageBox.Yes:
                 self.action_save.trigger()
+                if app.project.needs_save():
+                    log.info("Процесс сохранения был отменен. Не продолжаем действие!")
+                    return
             elif ret == QMessageBox.Cancel:
+                log.info("Пользователь отменил создание нового проекта")
                 return
+            elif ret == QMessageBox.No:
+                log.info("Пользователь отказался сохранять проект")
 
         self.clear_all_images()
 
@@ -200,6 +217,35 @@ class MainWindow(QMainWindow):
         self.set_current_file(None)
 
         log.info("Создан новый проект")
+
+    def action_open_trigger(self, event):
+        recommended_path = app.project.current_filepath
+        if not recommended_path:
+            recommended_path = constants.HOME_PATH
+
+        # У нас есть несохраненные изменения?
+        if get_app().project.needs_save():
+            log.info("Предлагаем пользователю сохранить проект перед открытием другого проекта")
+            ret = QMessageBox.question(self, "Сохранить проект?",
+                                       'Сохранить изменения в проекте "{}"?'.format(app.project.get("title")),
+                                       QMessageBox.Cancel | QMessageBox.No | QMessageBox.Yes)
+            if ret == QMessageBox.Yes:
+                self.action_save_trigger(event)
+                if app.project.needs_save():
+                    log.info("Процесс сохранения был отменен. Не продолжаем действие!")
+                    return
+            elif ret == QMessageBox.Cancel:
+                log.info("Пользователь отменил открытие другого проекта")
+                return
+            elif ret == QMessageBox.No:
+                log.info("Пользователь отказался сохранять проект")
+
+        # Запускаем диалоговое окно
+        file_path, file_type = QFileDialog.getOpenFileName(self, "Открыть проект...", recommended_path,
+                                                           "{} (*.json)".format(constants.APP_NAME))
+
+        # Загружаем файл проекта
+        self.open_project_signal.emit(file_path)
 
     def clear_all_images(self):
         """Удалить все изображения"""
@@ -249,35 +295,27 @@ class MainWindow(QMainWindow):
 
     def auto_save_project(self):
         """Автосохранение проекта"""
-        # TODO: Доделать метод
-        # Get current filepath (if any)
-        file_path = app.project.current_filepath
         if app.project.needs_save():
-            log.info("auto_save_project")
+            # Получить current_filepath (если есть)
+            file_path = app.project.current_filepath
 
             if file_path:
-                # A Real project file exists
-                # Append .osp if needed
-                if ".osp" not in file_path:
-                    file_path = "%s.osp" % file_path
-
-                # Save project
-                log.info("Auto save project file: %s" % file_path)
+                # Сохраняем проект
+                log.info("Автосохранение проекта: %s" % file_path)
                 self.save_project(file_path)
 
-                # Remove backup.osp (if any)
-                recovery_path = os.path.join(constants.BACKUP_PATH, "backup.osp")
+                # Удаляем backup.json (если есть), так как мы только что сохранили актуальный проект
+                recovery_path = os.path.join(constants.BACKUP_PATH, "backup.json")
                 if os.path.exists(recovery_path):
-                    # Delete backup.osp since we just saved the actual project
                     os.unlink(recovery_path)
-
             else:
-                # No saved project found
-                recovery_path = os.path.join(constants.BACKUP_PATH, "backup.osp")
-                log.info("Creating backup of project file: %s" % recovery_path)
+                # Сохраненный проект не найден
+                recovery_path = os.path.join(constants.BACKUP_PATH, "backup.json")
+                log.info("Сохдаем резервную копию проекта: %s" % recovery_path)
+                # TODO: Проверить: Надо ли использовать make_paths_relative=False или True. Есть подозрение, что True
                 app.project.save(recovery_path, move_temp_files=False, make_paths_relative=False)
 
-                # Clear the file_path (which is set by saving the project)
+                # Очистите current_filepath (который устанавливается путем сохранения проекта)
                 app.project.current_filepath = None
                 app.project.has_unsaved_changes = True
 
@@ -292,15 +330,14 @@ class MainWindow(QMainWindow):
                                                                "{} (*.json)".format(constants.APP_NAME))
 
         if file_path:
-            # Добавляем расширение файла если надо
-            if not file_path.endswith(".json"):
-                file_path = file_path + ".json"
-
             # Сохраняем проект
             self.save_project(file_path)
 
     def save_project(self, file_path):
         """Сохраняет проект по указанному пути"""
+        # Добавляем расширение файла если надо
+        if not file_path.endswith(".json"):
+            file_path = file_path + ".json"
         try:
             # Сохраняем проект по указанному пути
             app.project.save(file_path)
