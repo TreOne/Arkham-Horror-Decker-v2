@@ -2,6 +2,7 @@ import json
 import copy
 import os
 import re
+from PyQt5.QtCore import QFile
 from classes.logger import log
 from classes import constants
 
@@ -42,13 +43,20 @@ class JsonDataStore:
     def read_from_file(self, file_path, path_mode="ignore"):
         """Загрузить данные из JSON файла"""
         try:
-            with open(file_path, 'r', encoding='utf8') as f:
-                contents = f.read()
-                if contents:
-                    if path_mode == "absolute":
-                        # Преобразование всех путей в абсолютные
-                        contents = self.convert_paths_to_absolute(file_path, contents)
-                    return json.loads(contents, strict=False)
+            # Если не указан файл проекта, то загружаем проект по умолчанию
+            if file_path is None:
+                default_project_file = QFile(":/default/_project.json")
+                default_project_file.open(QFile.ReadOnly)
+                contents = bytes(default_project_file.readAll()).decode('UTF-8')
+            else:
+                # В противном случае, загружаем проект из указанного файла
+                with open(file_path, 'r', encoding='utf8') as f:
+                    contents = f.read()
+            if contents:
+                if path_mode == "absolute":
+                    # Преобразование всех путей в абсолютные
+                    contents = self.convert_paths_to_absolute(file_path, contents)
+                return json.loads(contents, strict=False)
         except Exception as ex:
             msg = ("Не могу загрузить {} из файла: {}".format(self.data_type, ex))
             log.error(msg)

@@ -8,7 +8,6 @@ from classes import ui_util, constants
 from classes.app import get_app, get_settings
 from classes.logger import log
 from classes.version import get_current_version
-from resources import app_rc
 
 app = get_app()
 settings = get_settings()
@@ -23,7 +22,6 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         QMainWindow.__init__(self)
-        app_rc.qInitResources()
 
         # Руссифицируем QT диалоги
         log.info("Установка руссификации интерфейса QT")

@@ -48,7 +48,7 @@ class App(QApplication):
 
             from classes import symbols, ui_util
 
-            # Перенаправление stdout и stderr в логер
+            # Перенаправляем stdout и stderr в логер
             reroute_output()
         except (ImportError, ModuleNotFoundError) as ex:
             tb = traceback.format_exc()
@@ -71,38 +71,42 @@ class App(QApplication):
             log.info("Python: %s" % platform.python_version())
             log.info("Qt5: %s" % QT_VERSION_STR)
             log.info("PyQt5: %s" % PYQT_VERSION_STR)
+            log.info("------------------------------------------------")
         except Exception:
             pass
 
-        # Записываем окончание сессии при получении сигнала от QT
+        log.info("Подключаем сигнал окончания сессии")
         self.aboutToQuit.connect(self.on_log_the_end)
 
-        # Переменные необходимые для правильной работы приложения
+        log.info("Подключаем переменные необходимые для правильной работы приложения")
         self.setApplicationName(constants.APP_NAME)
         self.setApplicationDisplayName(constants.APP_NAME_RUS)
         self.setOrganizationName(constants.AUTHOR)
         self.setApplicationVersion(constants.VERSION)
 
-        # Инициализация настроек
+        log.info("Инициализация настроек")
         App.settings = QSettings()
 
-        # Инициализация иконок
+        log.info("Инициализация иконок")
         App.symbol = symbols.Symbol()
 
-        # Инициализируем ловца необработанных исключений
+        log.info("Инициализируем ловца необработанных исключений")
         from classes import exceptions
         sys.excepthook = exceptions.exception_handler
 
-        # Подключаем обьект для хранения данных текущего проекта
+        log.info("Подключаем файл ресурсов приложения")
+        from resources import resources
+        resources.qInitResources()
+
+        log.info("Подключаем обьект для хранения данных текущего проекта")
         self.project = project.ProjectDataStore()
 
         log.info("Установка темы Fusion")
         self.setStyle(QStyleFactory.create("Fusion"))
 
-        # Загружаем и устанавливаем шрифт приложения
+        log.info("Загружаем и устанавливаем шрифт приложения")
         try:
-            font_path = os.path.join(constants.RESOURCES_PATH, "fonts", "roboto.ttf")
-            log.info("Установка шрифта из %s" % font_path)
+            font_path = ":/fonts/roboto.ttf"
             font_id = QFontDatabase.addApplicationFont(font_path)
             font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
             font = QFont(font_family)
@@ -111,11 +115,10 @@ class App(QApplication):
         except Exception as ex:
             log.error("Ошибка установки шрифта roboto.ttf: %s" % str(ex))
 
-        # Загружаем кастомные шрифты
+        log.info("Загружаем кастомные шрифты")
         try:
-            medieval_font_path = os.path.join(constants.RESOURCES_PATH, "fonts", "medieval.ttf")
-            log.info("Установка шрифта из %s" % medieval_font_path)
-            medieval_font_id = QFontDatabase.addApplicationFont(medieval_font_path)
+            font_path = ":/fonts/medieval.ttf"
+            medieval_font_id = QFontDatabase.addApplicationFont(font_path)
             medieval_font_family = QFontDatabase.applicationFontFamilies(medieval_font_id)[0]
             medieval_font = QFont(medieval_font_family)
             medieval_font.setPointSizeF(10.5)
@@ -123,11 +126,11 @@ class App(QApplication):
         except Exception as ex:
             log.error("Ошибка установки шрифта medieval.ttf: %s" % str(ex))
 
-        # Создаем главное окно приложения
+        log.info("Создаем главное окно приложения")
         from view.main_window import MainWindow
         MainWindow()
 
-        # Восстановить файл из резервной копии
+        log.info("Восстанавливаем файл из резервной копии")
         # (это не может произойти до тех пор, пока главное окно не будет полностью загружено)
         self.window.recover_backup_signal.emit()
 

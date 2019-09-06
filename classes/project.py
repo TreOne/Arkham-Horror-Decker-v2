@@ -12,7 +12,6 @@ class ProjectDataStore(JsonDataStore):
     def __init__(self):
         JsonDataStore.__init__(self)
         self.data_type = "данные проекта"  # Используется в сообщениях об ошибках
-        self.default_project_filepath = os.path.join(constants.DEFAULT_PROJECT_PATH, '_project.json')
 
         # Путь по умолчанию
         self.current_filepath = None
@@ -130,7 +129,7 @@ class ProjectDataStore(JsonDataStore):
 
     def load_default_project_settings(self):
         """Загружает файл настроек проекта по умолчанию (выкидывает ошибку при сбое)"""
-        self._data = self.read_from_file(self.default_project_filepath)
+        self._data = self.read_from_file(None)
         self.current_filepath = None
         self.has_unsaved_changes = False
         # Генерируем ID проекта

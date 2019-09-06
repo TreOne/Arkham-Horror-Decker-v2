@@ -1,2 +1,2 @@
-pyrcc5 app.qrc -o app_rc.py
+pyrcc5 app.qrc -o resources.py
 exit

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/icons">
+    <file>Material/actions/settings.svg</file>
     <file>Material/actions/file-restore-outline.svg</file>
     <file>Material/actions/file-plus-outline.svg</file>
     <file>Material/actions/content-save-outline.svg</file>
@@ -11,6 +12,11 @@
     <file>Material/actions/folder-open-outline.svg</file>
   </qresource>
   <qresource prefix="/">
+    <file>default/_project.json</file>
+    <file>license.txt</file>
+    <file>fonts/arkham-icons.ttf</file>
+    <file>fonts/medieval.ttf</file>
+    <file>fonts/roboto.ttf</file>
     <file>images/app.svg</file>
     <file>i18n/qtbase_ru.qm</file>
     <file>images/about_logo.png</file>

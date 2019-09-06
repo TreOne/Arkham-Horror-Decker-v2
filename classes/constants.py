@@ -16,7 +16,6 @@ CWD = os.getcwd()
 
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))  # Каталог приложения
 RESOURCES_PATH = os.path.join(PATH, "resources")
-DEFAULT_PROJECT_PATH = os.path.join(RESOURCES_PATH, "default")
 
 HOME_PATH = os.path.join(os.path.expanduser("~"))
 USER_PATH = os.path.join(HOME_PATH, f".{APP_NAME_WITHOUT_SPACES}")

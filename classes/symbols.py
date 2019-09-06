@@ -1,7 +1,6 @@
 import time
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont, QIcon, QFontDatabase, QFontMetrics
-from classes.helper_function import resource_path
 from classes.logger import log
 
 agility = "a"
@@ -41,7 +40,7 @@ class ArkhamIcon(QIcon):
         self.addPixmap(pixmap)
 
     def _font_init(self, size):
-        font_id = QFontDatabase.addApplicationFont(resource_path('resources/fonts/arkham-icons.ttf'))
+        font_id = QFontDatabase.addApplicationFont(':/fonts/arkham-icons.ttf')
         font = QFontDatabase.applicationFontFamilies(font_id)[0]
         self.font = QFont(font)
         self.font.setPixelSize(size)

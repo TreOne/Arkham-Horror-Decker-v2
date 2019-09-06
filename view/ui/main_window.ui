@@ -28,7 +28,56 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
+    <item row="4" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>5</number>
+      </property>
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>5</number>
+      </property>
+      <item>
+       <widget class="QToolButton" name="toolButton">
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources/app.qrc">
+          <normaloff>:/icons/Material/actions/settings.svg</normaloff>:/icons/Material/actions/settings.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="styleSheet">
+         <string notr="true">font: 20pt &quot;medieval&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Новая колода</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="5" column="0">
      <widget class="QTextBrowser" name="guide_browser">
       <property name="readOnly">
        <bool>false</bool>
@@ -138,8 +187,14 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dock_stat">
-   <property name="autoFillBackground">
-    <bool>true</bool>
+   <property name="styleSheet">
+    <string notr="true">#dock_stat #statistics_layout {
+    background-color: white;
+    border: 1px solid #989da6;
+}
+QLabel {
+     margin: 2px 0px 0px 2px;
+}</string>
    </property>
    <property name="windowTitle">
     <string>Статистика</string>
