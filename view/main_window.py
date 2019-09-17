@@ -266,7 +266,7 @@ class MainWindow(QMainWindow):
             log.info("Ошибка при очистке папки с изображениями: %s" % constants.IMAGES_PATH)
 
     def load_recent_menu(self):
-        """Очищает и загрузить список последних проектов"""
+        """Очищает и загружает список последних проектов"""
         # Получаем список последних проектов
         recent_projects = settings.value("recent_projects")
 
