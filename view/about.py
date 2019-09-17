@@ -40,10 +40,8 @@ class About(QDialog):
         self.lbl_version.setText(version_text)
         self.lbl_version.setAlignment(Qt.AlignCenter)
 
-        # Устанавливаем события
-        self.btn_license.clicked.connect(self.load_license)
-
-    def load_license(self):
+    @staticmethod
+    def btn_license_click():
         """Открыть окно 'Лицензия'"""
         win = License()
         win.exec_()
@@ -51,7 +49,6 @@ class About(QDialog):
 
 class License(QDialog):
     """Окно 'Лицензия'"""
-
     def __init__(self):
         QDialog.__init__(self)
 

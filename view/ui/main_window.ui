@@ -119,6 +119,7 @@
     </property>
     <addaction name="action_new"/>
     <addaction name="action_open"/>
+    <addaction name="action_open_url"/>
     <addaction name="action_recent_placeholder"/>
     <addaction name="separator"/>
     <addaction name="action_save"/>
@@ -148,6 +149,7 @@
    </attribute>
    <addaction name="action_new"/>
    <addaction name="action_open"/>
+   <addaction name="action_open_url"/>
    <addaction name="action_save"/>
    <addaction name="separator"/>
    <addaction name="action_update_db"/>
@@ -304,6 +306,9 @@ QLabel {
    </property>
   </action>
   <action name="action_new">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset theme="file-plus-outline" resource="../../resources/app.qrc">
      <normaloff>:/icons/Material/actions/file-plus-outline.svg</normaloff>:/icons/Material/actions/file-plus-outline.svg</iconset>
@@ -313,9 +318,6 @@ QLabel {
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
-   </property>
-   <property name="visible">
-    <bool>true</bool>
    </property>
   </action>
   <action name="action_open">
@@ -370,6 +372,21 @@ QLabel {
    </property>
    <property name="visible">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="action_open_url">
+   <property name="icon">
+    <iconset resource="../../resources/app.qrc">
+     <normaloff>:/icons/Material/actions/web.svg</normaloff>:/icons/Material/actions/web.svg</iconset>
+   </property>
+   <property name="text">
+    <string>О&amp;ткрыть ссылку...</string>
+   </property>
+   <property name="toolTip">
+    <string>Открыть колоду по ссылке</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
    </property>
   </action>
  </widget>

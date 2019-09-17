@@ -3,7 +3,7 @@ import shutil
 import webbrowser
 from PyQt5.QtCore import Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer, QTranslator
 from PyQt5.QtGui import QCursor, QIcon
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QSizePolicy, QWidget, QToolButton
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QSizePolicy, QWidget, QToolButton, QDialog
 from classes import ui_util, constants
 from classes.app import get_app, get_settings
 from classes.logger import log
@@ -245,6 +245,11 @@ class MainWindow(QMainWindow):
         # Загружаем файл проекта
         self.open_project_signal.emit(file_path)
 
+    def action_open_url_trigger(self, event):
+        """Отобразить диалог Открыть ссылку"""
+        win = OpenUrlDialog()
+        win.exec_()
+
     def clear_all_images(self):
         """Удалить все изображения"""
         try:
@@ -407,3 +412,12 @@ class MainWindow(QMainWindow):
         from view.about import About
         win = About()
         win.exec_()
+
+
+class OpenUrlDialog(QDialog):
+    """Окно 'Открыть ссылку'"""
+    def __init__(self):
+        QDialog.__init__(self)
+
+        ui_util.load_ui(self, 'open_url')
+        ui_util.init_ui(self)
