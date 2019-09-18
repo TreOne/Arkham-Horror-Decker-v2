@@ -250,6 +250,8 @@ class MainWindow(QMainWindow):
         """Отобразить диалог Открыть ссылку"""
         win = OpenUrlDialog()
         win.exec_()
+        # TODO: Доделать загрузку колоды из url
+        deck_info = win.deck_info
 
     def clear_all_images(self):
         """Удалить все изображения"""

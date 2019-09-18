@@ -67,6 +67,16 @@
        <property name="shortcut">
         <string>Ctrl+Q</string>
        </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_cancel">
+       <property name="text">
+        <string>Отмена</string>
+       </property>
       </widget>
      </item>
     </layout>
@@ -76,5 +86,22 @@
  <resources>
   <include location="../../resources/app.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btn_cancel</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>324</x>
+     <y>49</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
