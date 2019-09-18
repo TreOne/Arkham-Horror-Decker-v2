@@ -3,7 +3,8 @@ import re
 import requests
 from PyQt5.QtWidgets import QDialog
 from classes import ui_util
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
+
 from classes.logger import log
 
 
@@ -31,8 +32,9 @@ class OpenUrlDialog(QDialog):
 
     def get_deck_info_from_html(self, page_html):
         """Разбираем полученный HTML"""
-        parsed_html = BeautifulSoup(page_html, features="html.parser")
-        js_on_page = parsed_html.findAll('script', type='text/javascript')
+        only_script_tags = SoupStrainer("script", type='text/javascript')
+        parsed_html = BeautifulSoup(page_html, features="html.parser", parse_only=only_script_tags)
+        js_on_page = parsed_html.findAll(only_script_tags)
         self.find_deck_info_in_js_array(js_on_page)
 
     def find_deck_info_in_js_array(self, js_array):
