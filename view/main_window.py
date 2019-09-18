@@ -324,6 +324,7 @@ class MainWindow(QMainWindow):
                 app.project.has_unsaved_changes = True
 
     def action_save_trigger(self, event):
+        """Нажата кнопка Сохранить"""
         # Использовать current_filepath, если имеется, в противном случае спросить пользователя
         file_path = app.project.current_filepath
         if not file_path:

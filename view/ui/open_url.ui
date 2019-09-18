@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>650</width>
     <height>100</height>
    </rect>
   </property>
@@ -57,12 +57,12 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_close">
+      <widget class="QPushButton" name="btn_open_url">
        <property name="locale">
         <locale language="English" country="UnitedStates"/>
        </property>
        <property name="text">
-        <string>&amp;Закрыть</string>
+        <string>&amp;Открыть</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+Q</string>
@@ -76,22 +76,5 @@
  <resources>
   <include location="../../resources/app.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>btn_close</sender>
-   <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>309</x>
-     <y>223</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>158</x>
-     <y>220</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
