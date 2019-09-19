@@ -93,39 +93,38 @@ class ProjectDataStore(JsonDataStore):
         """Загрузка проекта из файла"""
         self.load_default_project_settings()
 
-        if file_path:
-            log.info("Загрузка проекта: {}".format(file_path))
+        log.info("Загрузка проекта: {}".format(file_path))
 
-            # Данные проекта по умолчанию
-            default_project = self._data
+        # Данные проекта по умолчанию
+        default_project = self._data
 
-            try:
-                # Загружаем проект
-                project_data = self.read_from_file(file_path, path_mode="absolute")
-            except Exception as ex:
-                raise ex
+        try:
+            # Загружаем проект
+            project_data = self.read_from_file(file_path, path_mode="absolute")
+        except Exception as ex:
+            raise ex
 
-            # Объединить параметры по умолчанию и параметры проекта
-            self._data = self.merge_settings(default_project, project_data)
+        # Объединить параметры по умолчанию и параметры проекта
+        self._data = self.merge_settings(default_project, project_data)
 
-            self.current_filepath = file_path
-            self.has_unsaved_changes = False
+        self.current_filepath = file_path
+        self.has_unsaved_changes = False
 
-            # Копируем все изображения проекта в рабочую папку изображений
-            loaded_project_folder = os.path.dirname(self.current_filepath)
-            project_images_folder = os.path.join(loaded_project_folder, "images")
-            if os.path.exists(project_images_folder) and clear_images:
-                # Удаляем удаляем каталог с изображениями
-                shutil.rmtree(constants.IMAGES_PATH, True)
+        # Копируем все изображения проекта в рабочую папку изображений
+        loaded_project_folder = os.path.dirname(self.current_filepath)
+        project_images_folder = os.path.join(loaded_project_folder, "images")
+        if os.path.exists(project_images_folder) and clear_images:
+            # Удаляем удаляем каталог с изображениями
+            shutil.rmtree(constants.IMAGES_PATH, True)
 
-                # Копируеем каталог с изображениями из папки проекта в рабочий каталог
-                shutil.copytree(project_images_folder, constants.IMAGES_PATH)
+            # Копируеем каталог с изображениями из папки проекта в рабочий каталог
+            shutil.copytree(project_images_folder, constants.IMAGES_PATH)
 
-            # Добавляем путь в список "Последние файлы"
-            self.add_to_recent_files(file_path)
+        # Добавляем путь в список "Последние файлы"
+        self.add_to_recent_files(file_path)
 
-            # Обновление всех структур данных
-            self.upgrade_project_data_structures()
+        # Обновление всех структур данных
+        self.upgrade_project_data_structures()
 
     def load_default_project_settings(self):
         """Загружает файл настроек проекта по умолчанию (выкидывает ошибку при сбое)"""
