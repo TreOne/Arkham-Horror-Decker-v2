@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Открыть ссылку</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="../../resources/app.qrc">
-    <normaloff>:/images/app.svg</normaloff>:/images/app.svg</iconset>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="label">

@@ -17,8 +17,9 @@
    <string>Arkham Horror Decker</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../resources/app.qrc">
-    <normaloff>:/images/app.svg</normaloff>:/images/app.svg</iconset>
+   <iconset>
+    <selectedoff>:/images/app.png</selectedoff>
+   </iconset>
   </property>
   <property name="dockNestingEnabled">
    <bool>true</bool>

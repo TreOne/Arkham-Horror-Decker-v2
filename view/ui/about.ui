@@ -25,10 +25,6 @@
   <property name="windowTitle">
    <string>О программе</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="../../resources/app.qrc">
-    <normaloff>:/images/app.svg</normaloff>:/images/app.svg</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="3">
     <layout class="QVBoxLayout" name="verticalLayout">

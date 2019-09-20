@@ -93,7 +93,7 @@ class ProjectDataStore(JsonDataStore):
         """Загрузка проекта из файла"""
         self.load_default_project_settings()
 
-        log.info("Загрузка проекта: {}".format(file_path))
+        log.info("Загрузка проекта: {}".format(file_path if file_path else "Новый проект"))
 
         # Данные проекта по умолчанию
         default_project = self._data

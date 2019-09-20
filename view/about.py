@@ -1,13 +1,14 @@
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from classes import constants, ui_util
+from classes.app import get_app
 from view.license import License
 
 
 class About(QDialog):
     """Окно 'О программе'"""
     def __init__(self):
-        QDialog.__init__(self)
+        QDialog.__init__(self, parent=get_app().window)
 
         ui_util.load_ui(self, 'about')
         ui_util.init_ui(self)

@@ -44,7 +44,7 @@ class JsonDataStore:
         """Загрузить данные из JSON файла"""
         try:
             # Если не указан файл проекта, то загружаем проект по умолчанию
-            if file_path is None:
+            if not file_path:
                 default_project_file = QFile(":/default/_project.json")
                 default_project_file.open(QFile.ReadOnly)
                 contents = bytes(default_project_file.readAll()).decode('UTF-8')
