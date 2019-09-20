@@ -12,7 +12,7 @@ from classes.logger import log
 class OpenUrlDialog(QDialog):
     """Окно 'Открыть ссылку'"""
     def __init__(self):
-        QDialog.__init__(self, parent=get_app().window)
+        QDialog.__init__(self, parent=get_app().main_window)
         ui_util.load_ui(self, 'open_url')
         ui_util.init_ui(self)
 

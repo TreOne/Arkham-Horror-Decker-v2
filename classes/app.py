@@ -132,7 +132,7 @@ class App(QApplication):
 
         log.info("Восстанавливаем файл из резервной копии")
         # (это не может произойти до тех пор, пока главное окно не будет полностью загружено)
-        self.window.recover_backup_signal.emit()
+        self.main_window.recover_backup_signal.emit()
 
         log.info("------------------------------------------------")
         log.info("Инициализация приложения завершена".center(48))

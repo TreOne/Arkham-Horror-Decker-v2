@@ -64,9 +64,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="deck_name">
         <property name="styleSheet">
-         <string notr="true">font: 20pt &quot;medieval&quot;;</string>
+         <string notr="true">font: 28pt &quot;Medieval English&quot;;</string>
         </property>
         <property name="text">
          <string>Новая колода</string>

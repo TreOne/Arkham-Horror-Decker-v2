@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
             log.error("Ошибка при установке руссификации интерфейса QT.")
 
         # Устанавливаем главное окно для ссылки на него во время инициализации потомков
-        app.window = self
+        app.main_window = self
 
         self.recent_menu = None
 
@@ -252,6 +252,8 @@ class MainWindow(QMainWindow):
         win.exec_()
         # TODO: Доделать загрузку колоды из url
         deck_info = win.deck_info
+        self.guide_browser.setText(deck_info['description_html'])
+        self.deck_name.setText(deck_info['name'])
 
     def clear_all_images(self):
         """Удалить все изображения"""

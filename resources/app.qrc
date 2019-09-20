@@ -16,8 +16,8 @@
     <file>default/_project.json</file>
     <file>license.txt</file>
     <file>fonts/arkham-icons.ttf</file>
-    <file>fonts/medieval.ttf</file>
     <file>fonts/roboto.ttf</file>
+    <file>fonts/medieval.ttf</file>
     <file>i18n/qtbase_ru.qm</file>
     <file>images/app.png</file>
     <file>images/about_logo.png</file>
