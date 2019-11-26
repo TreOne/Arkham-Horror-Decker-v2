@@ -1,7 +1,9 @@
 import os
 import shutil
 import webbrowser
-from PyQt5.QtCore import Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer, QTranslator
+
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt, QFileInfo, QByteArray, pyqtSlot, pyqtSignal, QTimer, QTranslator, QFile
 from PyQt5.QtGui import QCursor, QIcon
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QFileDialog, QSizePolicy, QWidget, QToolButton
 from classes import ui_util, constants
@@ -252,6 +254,11 @@ class MainWindow(QMainWindow):
         win.exec_()
         # TODO: Доделать загрузку колоды из url
         deck_info = win.deck_info
+
+        styles_file = QFile("resources/guide_style.css")
+        styles_file.open(QFile.ReadOnly | QFile.Text)
+        style_sheet = str(styles_file.readAll(), encoding='utf-8')
+        self.guide_browser.document().setDefaultStyleSheet(style_sheet)
         self.guide_browser.setText(deck_info['description_html'])
         self.deck_name.setText(deck_info['name'])
 
